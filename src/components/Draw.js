@@ -1,22 +1,23 @@
 import React, { useEffect, useRef, useState } from "react"
 
-let lineConnectedCount  = 0;
+let lineConnectedCount = 0;
 
 let connectedLines = []
-let randomColor = Math.floor(Math.random()*16777215).toString(16);
+//let randomColor = Math.floor(Math.random() * 16777215).toString(16);
 export default function DrawingDiv(props) {
 
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
   const [isDrawing, setIsDrawing] = useState(false)
-  const [point, setPoint]  = useState({ x: 0, y: 0 })
-  const [lengthPoint, setLengthPoint] = useState(null)
+  const [point, setPoint] = useState({ x: 0, y: 0 })
+  const [lengthPoint, setLengthPoint] = useState(0)
   const [globalDotDistance, setGlobalDotDistance] = useState(20)
   const [mousePoint, setMousePoint] = useState([0, 0])
   const [pointsArray, setPointsArray] = useState([])
-  const canvas = canvasRef.current;
-  const [lineConnected,setLineConnected] = useState(false)
+  const [lineConnected, setLineConnected] = useState(false)
   const lineDiv = document.getElementById("spanDiv")
+  const canvas = canvasRef.current;
+
   const myStyle = {
     position: "absolute",
     color: "black",
@@ -25,8 +26,7 @@ export default function DrawingDiv(props) {
     userSelect: "none"
   }
 
-
-  useEffect(() => {
+    useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -52,23 +52,23 @@ export default function DrawingDiv(props) {
     }
 
 
-  }, [])
-  const isLineConnected = ()=>{
+  }, [globalDotDistance])
+  const isLineConnected = () => {
 
-    if(connectedLines[lineConnectedCount][0].x.x1 == connectedLines[lineConnectedCount][connectedLines[lineConnectedCount].length-1].x.x2 &&connectedLines[lineConnectedCount][0].y.y1 == connectedLines[lineConnectedCount][connectedLines[lineConnectedCount].length-1].y.y2){
+    if (connectedLines[lineConnectedCount][0].x.x1 === connectedLines[lineConnectedCount][connectedLines[lineConnectedCount].length - 1].x.x2 && connectedLines[lineConnectedCount][0].y.y1 === connectedLines[lineConnectedCount][connectedLines[lineConnectedCount].length - 1].y.y2) {
       setLineConnected(true)
-      lineConnectedCount+=1
+      lineConnectedCount += 1
       console.log("we are connected")
-      connectedLines = [...connectedLines,[]]
-    }else{
+      connectedLines = [...connectedLines, []]
+    } else {
       connectedLines = [...connectedLines]
     }
     console.log(connectedLines)
 
-    }
+  }
   const writeLineLengths = (x1, y1, x2, y2) => {
     const createSpan = document.createElement("span")
-    const text = document.createTextNode(lengthPoint)
+    const text = document.createTextNode(lengthPoint.toString())
     createSpan.appendChild(text)
     lineDiv.appendChild(createSpan)
     createSpan.style.position = 'absolute'
@@ -95,6 +95,7 @@ export default function DrawingDiv(props) {
 
   }
   const finishDrawing = ({ nativeEvent }) => {
+    setLineConnected(false)
     const { offsetX, offsetY } = nativeEvent;
     const x = roundNearest(offsetX);
     const y = roundNearest(offsetY);
@@ -103,15 +104,15 @@ export default function DrawingDiv(props) {
     contextRef.current.lineTo(x, y);
     contextRef.current.stroke();
     writeLineLengths(point.x, point.y, x, y)
-    if(connectedLines.length<1){
-      connectedLines.push([{x : {x1 : point.x,x2:x},y: {y1:point.y,y2:y} }])
-    }else{
-      connectedLines[lineConnectedCount].push({x : {x1 : point.x,x2:x},y: {y1:point.y,y2:y} })
+    if (connectedLines.length < 1) {
+      connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y } }])
+    } else {
+      connectedLines[lineConnectedCount].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y } })
     }
     if (setPointsArray.length < 1) {
-      setPointsArray({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },len:lengthPoint })
+      setPointsArray({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y }, len: lengthPoint })
     } else {
-      setPointsArray([...pointsArray, { x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },len:lengthPoint}])
+      setPointsArray([...pointsArray, { x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y }, len: lengthPoint }])
     }
     setIsDrawing(false)
     isLineConnected()
@@ -159,12 +160,40 @@ export default function DrawingDiv(props) {
       createSpan.style.left = Math.round((path.x.x1 + path.x.x2) / 2) + 'px'
       createSpan.style.userSelect = "none"
     })
-    if(lineConnected){
-      connectedLines.pop();
-    }else{
-      connectedLines[lineConnectedCount].pop()
-    }
-    console.log(connectedLines)
+    console.log(lineConnected)
+      if (lineConnected) {
+        connectedLines.pop();
+        lineConnectedCount -= 1;
+        if(lineConnectedCount === -1 ){
+          lineConnectedCount = 0;
+        }else{
+          connectedLines[lineConnectedCount].pop();
+
+        }
+        setLineConnected(false);
+        // burada kontrol et
+      } else {
+        if (connectedLines[lineConnectedCount].length === 1) {
+          connectedLines[lineConnectedCount].pop();
+          if (connectedLines.length === 0) {
+            setLineConnected(false)
+
+          } else {
+            setLineConnected(true)
+          }
+
+        } else {
+          if(connectedLines[0].length ===  0){
+            connectedLines.pop()
+          }else{
+            connectedLines[lineConnectedCount].pop();
+          }
+        }
+
+      }
+
+      console.log(connectedLines)
+
 
   }
 
@@ -173,11 +202,11 @@ export default function DrawingDiv(props) {
     <div id="main">
       <h1 style={myStyle} id="lenPointNum">{lengthPoint}</h1>
       <div className="undo">
-        <button onClick={undo}>
+        <button id="undoBtt" onClick={undo}>
           undo
         </button>
       </div>
-      <div style={{position:"relative",width:0,height:0}} id="canvasDiv">
+      <div style={{ position: "relative", width: 0, height: 0 }} id="canvasDiv">
         <div id="spanDiv"></div>
         <canvas id="myCanvas"
                 onMouseDown={startDrawing}

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 
-let lineConnectedCount = 0;
-let howMuchNeeded = [];
+let connectedLineCounter = 0;
 let connectedLines = []
 
 export default function DrawingDiv(props) {
@@ -51,15 +50,17 @@ export default function DrawingDiv(props) {
     getRoomContent()
   }, [currentRoom])
   const isLineConnected = () => {
-    if (connectedLines[lineConnectedCount][0].x.x1 === connectedLines[lineConnectedCount][connectedLines[lineConnectedCount].length - 1].x.x2 && connectedLines[lineConnectedCount][0].y.y1 === connectedLines[lineConnectedCount][connectedLines[lineConnectedCount].length - 1].y.y2) {
+      if (connectedLines[connectedLineCounter][0].x.x1 === connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2 && connectedLines[connectedLineCounter][0].y.y1 === connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y2) {
       setLineConnected(true)
-      lineConnectedCount += 1
+      connectedLineCounter += 1
       console.log("we are connected")
       connectedLines = [...connectedLines, []]
-      howMuchNeeded.push(...howMuchNeeded, connectedLines[lineConnectedCount - 1]);
     } else {
       connectedLines = [...connectedLines]
     }
+    room[currentRoomIndex].coordinates.connectedLines = connectedLines
+    room[currentRoomIndex].coordinates.connectedLineCounter = connectedLineCounter
+
   }
   const writeLineLengths = (x1, y1, x2, y2) => {
     const createSpan = document.createElement("span")
@@ -94,6 +95,11 @@ export default function DrawingDiv(props) {
       }
     }
     context.stroke()
+    setPointsArray(room[currentRoomIndex].coordinates.pointsArray)
+    connectedLines =  room[currentRoomIndex].coordinates.connectedLines
+    connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
+    console.log(connectedLines)
+    setRoomNumber(currentRoomIndex)
     room[currentRoomIndex].coordinates.pointsArray.forEach(path => {
       context.beginPath();
       context.moveTo(path.x.x1, path.y.y1);
@@ -150,8 +156,6 @@ export default function DrawingDiv(props) {
     setIsDrawing(true)
     if (currentRoomIndex === roomNumber) {
     } else {
-      setPointsArray(room[currentRoomIndex].coordinates.pointsArray)
-      setRoomNumber(currentRoomIndex)
       getRoomContent()
     }
   }
@@ -171,8 +175,9 @@ export default function DrawingDiv(props) {
     if (connectedLines.length < 1) {
       connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y } }])
     } else {
-      connectedLines[lineConnectedCount].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y } })
+      connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y } })
     }
+    console.log(connectedLines)
     const newPointsArray = [...pointsArray, { x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y }, len: lengthPoint }]
     setPointsArray(newPointsArray)
     room[currentRoomIndex].coordinates.pointsArray = newPointsArray
@@ -180,6 +185,7 @@ export default function DrawingDiv(props) {
     isLineConnected()
     contextRef.current.closePath();
     lenPointDiv.innerText = ""
+    console.log(connectedLines)
   }
   const draw = ({ nativeEvent }) => {
     if (!isDrawing) {
@@ -198,16 +204,16 @@ export default function DrawingDiv(props) {
     room[currentRoomIndex].coordinates.pointsArray = newPointsArray
     if (lineConnected) {
       connectedLines.pop();
-      lineConnectedCount -= 1;
-      if (lineConnectedCount === -1) {
-        lineConnectedCount = 0;
+      connectedLineCounter -= 1;
+      if (connectedLineCounter === -1) {
+        connectedLineCounter = 0;
       } else {
-        connectedLines[lineConnectedCount].pop();
+        connectedLines[connectedLineCounter].pop();
       }
       setLineConnected(false);
     } else {
-      if (connectedLines[lineConnectedCount].length === 1) {
-        connectedLines[lineConnectedCount].pop();
+      if (connectedLines[connectedLineCounter].length === 1) {
+        connectedLines[connectedLineCounter].pop();
         if (connectedLines.length === 0) {
           setLineConnected(false)
         } else {
@@ -217,7 +223,7 @@ export default function DrawingDiv(props) {
         if (connectedLines[0].length === 0) {
           connectedLines.pop()
         } else {
-          connectedLines[lineConnectedCount].pop();
+          connectedLines[connectedLineCounter].pop();
         }
       }
     }

@@ -41,7 +41,7 @@ class Manage extends Component {
     selectedRoom.value = id;
     this.setState({
       ...this.state,
-      rooms: [...this.state.rooms, { roomName: id, coordinates: { pointsArray: [],connectedLines : [] } }],
+      rooms: [...this.state.rooms, { roomName: id, coordinates: { pointsArray: [],connectedLines : [[]],connectedLineCounter : 0} }],
       selectedRoom: id,
       selectedRoomIndex: options[selectedRoom.selectedIndex].index
     })

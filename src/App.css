@@ -23,12 +23,19 @@
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
 .App-link {
   color: #61dafb;
 }
-
-
+.existingRoomsStyle {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  text-align: center;
+  align-items: center;
+  border: 1px solid black;
+  width: 8vw;
+  height: 5vh;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

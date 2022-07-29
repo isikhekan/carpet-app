@@ -41,7 +41,7 @@ class Manage extends Component {
     selectedRoom.value = id;
     this.setState({
       ...this.state,
-      rooms: [...this.state.rooms, { roomName: id, coordinates: { pointsArray: [],connectedLines : [[]],connectedLineCounter : 0} }],
+      rooms: [...this.state.rooms, { roomName: id, coordinates: { connectedLines : [[]],connectedLineCounter : 0} }],
       selectedRoom: id,
       selectedRoomIndex: options[selectedRoom.selectedIndex].index
     })
@@ -61,13 +61,13 @@ class Manage extends Component {
           </select>
         </div>
         <div>
-          <h4>Oda ismi giriniz</h4>
+          <h4>Kat ismi giriniz</h4>
           <input onChange={this.checkRoomNameIsValid} className="" placeholder='Enter room name' type="text" name="roomName"
                  id="roomName"/>
           <button disabled={!this.state.roomNameIsValid} onClick={this.addRoom} type="submit">Submit</button>
         </div>
         <div>
-          <h4>Odalarınız</h4>
+          <h4>Katlar</h4>
           <select onChange={this.changeSelectedRoom} name="roomSelect" id="roomSelect">
           </select>
         </div>
@@ -80,7 +80,7 @@ class Manage extends Component {
                 currentRoomIndex={this.state.selectedRoomIndex}
               />
             ) : (
-              <p>select room first</p>
+              <h2>enter floor first</h2>
             )}
           </div>
 

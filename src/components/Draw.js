@@ -15,6 +15,7 @@ export default function DrawingDiv(props) {
   const lineDiv = document.getElementById("spanDiv")
   const [roomNumber, setRoomNumber] = useState(0)
   const lenPointDiv = document.getElementById("lenPointNum")
+  const [connectedLineNameCounter,setConnectedLineNameCounter] = useState(0)
   const myStyle = {
     position: "absolute",
     color: "black",
@@ -42,7 +43,7 @@ export default function DrawingDiv(props) {
       }
     }
     context.stroke();
-  }, [globalDotDistance])
+  }, [])
   useEffect(() => {
       getRoomContent()
     },[connectedLineCounter])
@@ -59,6 +60,8 @@ export default function DrawingDiv(props) {
       connectedLineCounter += 1
       connectedLines = [...connectedLines, []]
       addWhatIsRoomNumber(startX,startY,connectedLineCounter)
+      const nameCounter = connectedLineNameCounter
+      setConnectedLineNameCounter(nameCounter+1)
       } else {
       connectedLines = [...connectedLines]
     }
@@ -77,13 +80,12 @@ export default function DrawingDiv(props) {
     createRoomNumberSpan.style.left = startX +"px";
     createRoomNumberSpan.userSelect = "none";
   }
+
   const glowSelectedRoom = (e)=>{
   }
   const deleteSelectedLines = (e)=>{
     const targetId = e.target.parentNode.parentNode.id;
-    console.log(connectedLines)
     for(let i = 0;i<connectedLines.length-1;i++){
-      console.log(connectedLines)
       if(String(connectedLines[i][0].id) === targetId){
         connectedLines.splice(i,1)
         room[currentRoomIndex].coordinates.connectedLines = connectedLines
@@ -92,6 +94,21 @@ export default function DrawingDiv(props) {
       }
     }
     getRoomContent()
+  }
+  const changeConnectedLinesTotalPiece = (e)=>{
+    const existingRooms = document.getElementById("existingRoomsAtFloor")
+    let roomIndex = undefined;
+    for(let i = 0 ; i<existingRooms.children.length; i++ ){
+      if(existingRooms.children[i].id ===e.target.parentNode.parentNode.id){
+        roomIndex = i;
+      }
+    }
+    room[currentRoomIndex].coordinates.connectedLines[roomIndex].forEach((path)=>{
+      path.totalPiece  = parseInt(e.target.value)
+      connectedLines = room[currentRoomIndex].coordinates.connectedLines
+      room[currentRoomIndex].coordinates.connectedLines = connectedLines
+    })
+
   }
   const writeLineLengths = (x1, y1, x2, y2) => {
     const createSpan = document.createElement("span")
@@ -117,14 +134,26 @@ export default function DrawingDiv(props) {
     existingRoomDiv.innerHTML = ""
     for(let i  = 0;i<room[currentRoomIndex].coordinates.connectedLineCounter;i++){
       const createSpan  = document.createElement("span");
+      const createDiv = document.createElement("div")
+      createDiv.style.width = `100%`
       const createDeleteButtonSpan = document.createElement("span");
+      const createInp = document.createElement("input");
+      createDiv.appendChild(createInp)
+      createInp.addEventListener("input",changeConnectedLinesTotalPiece)
+      createInp.type = "number"
+      createInp.value = room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece;
+      createInp.min = 1;
+      createInp.style.textAlign  = "center"
+      createInp.style.width = `50%`
       createDeleteButtonSpan.innerHTML = "<span>SİL</span>"
       createDeleteButtonSpan.addEventListener("click",deleteSelectedLines)
       createSpan.classList.add("existingRoomsStyle")
+      createSpan.style.flexDirection = "column"
       createSpan.setAttribute("id",room[currentRoomIndex].coordinates.connectedLines[i][0].id)
       createSpan.addEventListener("click", glowSelectedRoom)
       const createText = document.createTextNode(room[currentRoomIndex].coordinates.connectedLines[i][0].id)
       createSpan.appendChild(createText)
+      createSpan.appendChild(createDiv)
       createSpan.appendChild(createDeleteButtonSpan)
       existingRoomDiv.appendChild(createSpan)
     }
@@ -133,6 +162,26 @@ export default function DrawingDiv(props) {
     for(let i = 0;i<connectedLines.length-1;i++){
       addWhatIsRoomNumber(connectedLines[i][0].x.x1,connectedLines[i][0].y.y1,room[currentRoomIndex].coordinates.connectedLines[i][0].id)
     }
+  }
+  const clearAllFloor = ()=>{
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    contextRef.current.clearRect(0, 0, canvas.width, canvas.height)
+    document.getElementById("spanDiv").innerHTML = ""
+    document.getElementById("lenPointNum").innerText = "";
+    context.beginPath()
+    for (let i = 0; i < canvas.width; i += globalDotDistance) {
+      for (let j = 0; j < canvas.height; j += globalDotDistance) {
+        context.moveTo(i, j)
+        context.arc(i, j, 1, 0, Math.PI * 2);
+      }
+    }
+    context.stroke();
+    room[currentRoomIndex].coordinates.connectedLines = []
+    room[currentRoomIndex].coordinates.connectedLineCounter = 0
+    connectedLines = room[currentRoomIndex].coordinates.connectedLines;
+    connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
+    getExistingRooms()
   }
   const getRoomContent = () => {
     const canvas = canvasRef.current;
@@ -202,9 +251,9 @@ export default function DrawingDiv(props) {
     contextRef.current.stroke();
     writeLineLengths(point.x, point.y, x, y)
     if (connectedLines.length < 1) {
-      connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:1,len: lengthPoint}])
+      connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1}])
     } else {
-      connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineCounter+1, len: lengthPoint})
+      connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1})
     }
     setIsDrawing(false)
     isLineConnected()
@@ -264,6 +313,7 @@ export default function DrawingDiv(props) {
         <button id="undoBtt" onClick={undo}>
           undo
         </button>
+        <button onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
       </div>
       <div style={{width:100+"vw",justifyContent:"start"}} id="existingRoomsAtFloor" className="existingRoomsAtFloor existingRoomsStyle">
       </div>

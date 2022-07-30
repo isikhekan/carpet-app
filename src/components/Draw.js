@@ -82,6 +82,24 @@ export default function DrawingDiv(props) {
   }
 
   const glowSelectedRoom = (e)=>{
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const targetId = e.target.id
+    if(connectedLines[connectedLines.length-1].length<1){
+      for(let i = 0; i<connectedLines.length-1;i++){
+        connectedLines[i].forEach((path)=>{
+          if(path.id === targetId){
+            path.isLineRed  ? context.strokeStyle = "grey" : context.strokeStyle = "black"
+            context.beginPath();
+            context.moveTo(path.x.x1, path.y.y1);
+            context.lineTo(path.x.x2, path.y.y2);
+            context.stroke()
+            context.closePath();
+            path.isLineRed = !path.isLineRed
+          }
+        })
+      }
+    }
   }
   const deleteSelectedLines = (e)=>{
     const targetId = e.target.parentNode.parentNode.id;
@@ -108,7 +126,6 @@ export default function DrawingDiv(props) {
       connectedLines = room[currentRoomIndex].coordinates.connectedLines
       room[currentRoomIndex].coordinates.connectedLines = connectedLines
     })
-
   }
   const writeLineLengths = (x1, y1, x2, y2) => {
     const createSpan = document.createElement("span")
@@ -144,7 +161,7 @@ export default function DrawingDiv(props) {
       createInp.value = room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece;
       createInp.min = 1;
       createInp.style.textAlign  = "center"
-      createInp.style.width = `50%`
+      createInp.style.width = `100%`
       createDeleteButtonSpan.innerHTML = "<span>SİL</span>"
       createDeleteButtonSpan.addEventListener("click",deleteSelectedLines)
       createSpan.classList.add("existingRoomsStyle")
@@ -186,6 +203,7 @@ export default function DrawingDiv(props) {
   const getRoomContent = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
+    context.strokeStyle = "grey"
     contextRef.current.clearRect(0, 0, canvas.width, canvas.height)
     document.getElementById("spanDiv").innerHTML = ""
     document.getElementById("lenPointNum").innerText = "";
@@ -199,6 +217,13 @@ export default function DrawingDiv(props) {
     context.stroke()
     connectedLines = room[currentRoomIndex].coordinates.connectedLines
     connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
+    if(connectedLines[connectedLines.length-1].length<1){
+      for(let i = 0; i<connectedLines.length-1;i++){
+        connectedLines[i].forEach((path)=>{
+          path.isLineRed = false;
+        })
+      }
+    }
     getExistingRooms()
     setRoomNumber(currentRoomIndex)
     room[currentRoomIndex].coordinates.connectedLines.forEach((path)=>{
@@ -251,9 +276,9 @@ export default function DrawingDiv(props) {
     contextRef.current.stroke();
     writeLineLengths(point.x, point.y, x, y)
     if (connectedLines.length < 1) {
-      connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1}])
+      connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1,isLineRed:false}])
     } else {
-      connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1})
+      connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1,isLineRed:false})
     }
     setIsDrawing(false)
     isLineConnected()

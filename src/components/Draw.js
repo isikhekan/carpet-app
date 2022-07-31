@@ -217,13 +217,16 @@ export default function DrawingDiv(props) {
     context.stroke()
     connectedLines = room[currentRoomIndex].coordinates.connectedLines
     connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
-    if(connectedLines[connectedLines.length-1].length<1){
-      for(let i = 0; i<connectedLines.length-1;i++){
-        connectedLines[i].forEach((path)=>{
-          path.isLineRed = false;
-        })
+    if(connectedLines.length) {
+      if(connectedLines[connectedLines.length-1].length<1){
+        for(let i = 0; i<connectedLines.length-1;i++){
+          connectedLines[i].forEach((path)=>{
+            path.isLineRed = false;
+          })
+        }
       }
     }
+
     getExistingRooms()
     setRoomNumber(currentRoomIndex)
     room[currentRoomIndex].coordinates.connectedLines.forEach((path)=>{
@@ -330,26 +333,34 @@ export default function DrawingDiv(props) {
     getRoomContent()
     room[currentRoomIndex].coordinates.connectedLineCounter = connectedLineCounter
   }
+
   return (
-    <div id="main">
-      <div className="roomName"><h1>you'r in {currentRoom}</h1></div>
+    <div id="main" className="bg-gray-900">
+      <div className="roomName text-center text-gray-400"><h1>you'r in {currentRoom}</h1></div>
+      <hr className="mt-2 border-b-4 border-b-emerald-500"/>
       <h1 style={myStyle} id="lenPointNum">{lengthPoint}</h1>
-      <div className="undo">
-        <button id="undoBtt" onClick={undo}>
-          undo
-        </button>
-        <button onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
+      <div className="flex flex-row w-full h-24">
+        <div  id="existingRoomsAtFloor" className="existingRoomsAtFloor existingRoomsStyle w-10/12">
+        </div>
+        <div className="w-2/12   flex flex-col items-center justify-evenly">
+          <button className="h-9 text-gray-400 bg-gray-700 border-solid border border-black w-20 border-black w-20 border-b-2 border-b-emerald-500"  id="undoBtt" onClick={undo}>
+            undo
+          </button>
+          <button className="text-gray-400 bg-gray-700 h-9 border-solid  border-black w-20 border-b-2 border-b-emerald-500" onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
+        </div>
       </div>
-      <div style={{width:100+"vw",justifyContent:"start"}} id="existingRoomsAtFloor" className="existingRoomsAtFloor existingRoomsStyle">
-      </div>
-      <div style={{ position: "relative", width: 0, height: 0 }} id="canvasDiv">
-        <div id="spanDiv"></div>
-        <canvas id="myCanvas"
+      <div  style={{ position: "relative", width: 0, height: 0 }} id="canvasDiv">
+        <div className="border-gray-400" id="spanDiv">
+
+        </div>
+        <div>
+        <canvas className="bg-gray-900" id="myCanvas"
                 onMouseDown={startDrawing}
                 onMouseUp={finishDrawing}
                 onMouseMove={draw}
                 ref={canvasRef}
         />
+      </div>
       </div>
     </div>
   )

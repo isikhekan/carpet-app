@@ -53,7 +53,7 @@ class Manage extends Component {
       <div>
           <div>
             <div className="w-full h-full flex flex-col text-gray-400">
-              <h1 className="bg-gray-900 text-gray-500 text-center text-black italic font-medium">Yönetim Paneli</h1>
+              <h1 className="bg-gray-900 text-gray-300 text-center text-black italic font-medium">Yönetim Paneli</h1>
               <hr/>
 
               <div className="w-full h-full flex flex-row bg-gray-900 ">
@@ -90,7 +90,7 @@ class Manage extends Component {
                                         id="roomName"/>
                               </div>
                             <div className="w-2/4" >
-                              <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 hover:bg-gray-900 outline-0 bg-gray-700 text-gray-400 italic h-6 border-0 mt-2.5  w-full border-b-emerald-400 border-b-2 border-b-emerald-500" disabled={!this.state.roomNameIsValid} onClick={this.addRoom} type="submit">Submit</button>
+                              <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 hover:bg-gray-900  border-solid outline-0 bg-gray-700 text-gray-400 italic h-6 border-0 mt-2.5  w-full border-b-emerald-400 border-b-2 border-b-emerald-500" disabled={!this.state.roomNameIsValid} onClick={this.addRoom} type="submit">Submit</button>
                             </div>
                           </div>
                     </div>
@@ -109,14 +109,14 @@ class Manage extends Component {
             </div>
           </div>
           <div>
-            <div className="draw">
-              <div>
+            <div className="draw w-full">
+              <div className="w-full">
                 {this.state.rooms.length ? (
                   <Draw
                     room={this.state.rooms}
                     currentRoom={this.state.selectedRoom}
                     currentRoomIndex={this.state.selectedRoomIndex}
-                  />
+                   />
                 ) : (
                   <h2 className="italic text-center">enter floor first</h2>
                 )}

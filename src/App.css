@@ -4,7 +4,6 @@
   box-sizing: border-box;
 }
 
-
 .App {
   text-align: center;
 }
@@ -32,16 +31,6 @@
 }
 .App-link {
   color: #61dafb;
-}
-.existingRoomsStyle {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  text-align: center;
-  align-items: center;
-  border: 1px solid black;
-  width: 15vw;
-  height: 8vh;
 }
 @keyframes App-logo-spin {
   from {

@@ -18,7 +18,7 @@ export default function DrawingDiv(props) {
   const [connectedLineNameCounter,setConnectedLineNameCounter] = useState(0)
   const myStyle = {
     position: "absolute",
-    color: "black",
+    color: "white",
     left: mousePoint[0],
     top: mousePoint[1] + 350,
     userSelect: "none",
@@ -33,7 +33,7 @@ export default function DrawingDiv(props) {
     const context = canvas.getContext("2d");
     context.scale(1, 1);
     context.lineCap = "round";
-    context.strokeStyle = "grey";
+    context.strokeStyle = "#cacccf";
     context.lineWidth = 2;
     contextRef.current = context;
     for (let i = 0; i < canvas.width; i += globalDotDistance) {
@@ -74,7 +74,7 @@ export default function DrawingDiv(props) {
     const createRoomNumberSpan = document.createElement("span");
     createRoomNumberSpan.innerText = roomNum;
     whereToAdd.appendChild(createRoomNumberSpan)
-    createRoomNumberSpan.style.color = "blue"
+    createRoomNumberSpan.style.color = "#4bc496"
     createRoomNumberSpan.style.position = "absolute";
     createRoomNumberSpan.style.top = startY + "px";
     createRoomNumberSpan.style.left = startX +"px";
@@ -89,7 +89,7 @@ export default function DrawingDiv(props) {
       for(let i = 0; i<connectedLines.length-1;i++){
         connectedLines[i].forEach((path)=>{
           if(path.id === targetId){
-            path.isLineRed  ? context.strokeStyle = "grey" : context.strokeStyle = "black"
+            path.isLineRed  ? context.strokeStyle = "grey" : context.strokeStyle = "#4bc496"
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
             context.lineTo(path.x.x2, path.y.y2);
@@ -132,8 +132,9 @@ export default function DrawingDiv(props) {
     const text = document.createTextNode(lengthPoint.toString())
     createSpan.appendChild(text)
     lineDiv.appendChild(createSpan)
+
     createSpan.style.position = 'absolute'
-    createSpan.style.background = "white"
+    createSpan.style.background = "black"
     createSpan.style.fontSize = 0.8 + "vh"
     createSpan.style.borderRadius = 10
     createSpan.style.top = Math.round((y1 + y2) / 2) + 'px'
@@ -156,13 +157,29 @@ export default function DrawingDiv(props) {
       const createDeleteButtonSpan = document.createElement("span");
       const createInp = document.createElement("input");
       createDiv.appendChild(createInp)
+      createDiv.style.display = "flex"
+      createDiv.style.justifyContent = "center"
+      createDiv.style.alignItems = "center"
+      createSpan.style.textAlign= "center"
+      createSpan.style.border = `1px solid white`
+      createSpan.style.height = `100%`
+      createSpan.style.display  ="flex"
+      createSpan.style.justifyContent = "center"
       createInp.addEventListener("input",changeConnectedLinesTotalPiece)
       createInp.type = "number"
+      createInp.style.border = `2px solid #4bc496`
       createInp.value = room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece;
       createInp.min = 1;
+      createInp.style.height = `1.8rem`
+      createInp.style.outline = "none"
+      createInp.style.borderRadius = `3rem`
       createInp.style.textAlign  = "center"
-      createInp.style.width = `100%`
-      createDeleteButtonSpan.innerHTML = "<span>SİL</span>"
+      createInp.style.width = `50%`
+      createDeleteButtonSpan.style.height =`3rem`
+      createDeleteButtonSpan.classList.add("deleteRoomButton")
+      createDeleteButtonSpan.innerHTML = "<svg height='100%' color='#4bc496' xmlns=\"http://www.w3.org/2000/svg\" className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" strokeWidth={2}>\n" +
+        "  <path strokeLinecap=\"round\" strokeLinejoin=\"round\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\" />\n" +
+        "</svg>"
       createDeleteButtonSpan.addEventListener("click",deleteSelectedLines)
       createSpan.classList.add("existingRoomsStyle")
       createSpan.style.flexDirection = "column"
@@ -203,7 +220,7 @@ export default function DrawingDiv(props) {
   const getRoomContent = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    context.strokeStyle = "grey"
+    context.strokeStyle = "#cacccf"
     contextRef.current.clearRect(0, 0, canvas.width, canvas.height)
     document.getElementById("spanDiv").innerHTML = ""
     document.getElementById("lenPointNum").innerText = "";
@@ -340,17 +357,17 @@ export default function DrawingDiv(props) {
       <hr className="mt-2 border-b-4 border-b-emerald-500"/>
       <h1 style={myStyle} id="lenPointNum">{lengthPoint}</h1>
       <div className="flex flex-row w-full h-24">
-        <div  id="existingRoomsAtFloor" className="existingRoomsAtFloor existingRoomsStyle w-10/12">
+        <div  id="existingRoomsAtFloor" className="text-gray-400 scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-11/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
-        <div className="w-2/12   flex flex-col items-center justify-evenly">
-          <button className="h-9 text-gray-400 bg-gray-700 border-solid border border-black w-20 border-black w-20 border-b-2 border-b-emerald-500"  id="undoBtt" onClick={undo}>
+        <div className="w-1/12   flex flex-col items-center justify-evenly">
+          <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 border-l-0 border-r-0 hover:bg-gray-900 hover:border-white h-11 text-gray-400 bg-gray-700 border-solid border border-black w-full border-black    border-b-2 border-b-emerald-500"  id="undoBtt" onClick={undo}>
             undo
           </button>
-          <button className="text-gray-400 bg-gray-700 h-9 border-solid  border-black w-20 border-b-2 border-b-emerald-500" onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
+          <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 hover:bg-gray-900 border-r-0 hover:border-white text-gray-400 bg-gray-700 h-11 border-l-0 border-solid w-full border-b-2 border-b-emerald-500" onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
         </div>
       </div>
-      <div  style={{ position: "relative", width: 0, height: 0 }} id="canvasDiv">
-        <div className="border-gray-400" id="spanDiv">
+      <div  style={{ position: "relative"}} className="overflow-hidden" id="canvasDiv">
+        <div className="text-emerald-500" id="spanDiv">
 
         </div>
         <div>

@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react"
 import '../App.css';
+import { matches } from "@testing-library/jest-dom/dist/utils";
 let connectedLines = []
 let connectedLineCounter = 0;
 export default function DrawingDiv(props) {
   const { room, currentRoom, currentRoomIndex } = props
+  const [lastMoveCoordinates,setLastMoveCoordinates] = useState({})
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
   const [isDrawing, setIsDrawing] = useState(false)
@@ -20,7 +22,7 @@ export default function DrawingDiv(props) {
     position: "absolute",
     color: "white",
     left: mousePoint[0],
-    top: mousePoint[1] + 350,
+    top: mousePoint[1]  ,
     userSelect: "none",
     opacity: 0
   }
@@ -175,9 +177,9 @@ export default function DrawingDiv(props) {
       createInp.style.borderRadius = `3rem`
       createInp.style.textAlign  = "center"
       createInp.style.width = `50%`
-      createDeleteButtonSpan.style.height =`3rem`
+      createDeleteButtonSpan.style.height =`1.6rem`
       createDeleteButtonSpan.classList.add("deleteRoomButton")
-      createDeleteButtonSpan.innerHTML = "<svg height='100%' color='#4bc496' xmlns=\"http://www.w3.org/2000/svg\" className=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" strokeWidth={2}>\n" +
+      createDeleteButtonSpan.innerHTML = "<svg height='100%' color='#4bc496' xmlns=\"http://www.w3.org/2000/svg\" className=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" strokeWidth={2}>\n" +
         "  <path strokeLinecap=\"round\" strokeLinejoin=\"round\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\" />\n" +
         "</svg>"
       createDeleteButtonSpan.addEventListener("click",deleteSelectedLines)
@@ -270,13 +272,24 @@ export default function DrawingDiv(props) {
     }
   }
   const startDrawing = ({ nativeEvent }) => {
+    const myCanvas = document.getElementById("myCanvas")
+    if(nativeEvent.type == "touchstart"){
+      console.log(nativeEvent.touches,"basladi")
+      let x = roundNearest(nativeEvent.touches[0].clientX - myCanvas.getBoundingClientRect().left);
+      let y = roundNearest(nativeEvent.touches[0].clientY - myCanvas.getBoundingClientRect().top);
+      contextRef.current.beginPath();
+      setPoint({ x, y })
+    }else if(nativeEvent.type =="mousedown"){
+      console.log("mousemove")
+      const { offsetX, offsetY } = nativeEvent;
+      const x = roundNearest(offsetX);
+      const y = roundNearest(offsetY);
+      contextRef.current.beginPath();
+      setPoint({ x, y })
+    }
     const currentLength = document.getElementById("lenPointNum")
     currentLength.style.opacity = 1
-    const { offsetX, offsetY } = nativeEvent;
-    const x = roundNearest(offsetX);
-    const y = roundNearest(offsetY);
-    contextRef.current.beginPath();
-    setPoint({ x, y })
+
     setIsDrawing(true)
     if (currentRoomIndex === roomNumber) {
     } else {
@@ -284,36 +297,70 @@ export default function DrawingDiv(props) {
     }
   }
   const finishDrawing = ({ nativeEvent }) => {
+    const myCanvas = document.getElementById("myCanvas")
+    console.log(lastMoveCoordinates)
+    if(nativeEvent.type == "touchend"){
+      console.log(nativeEvent.touches)
+      let x = roundNearest(lastMoveCoordinates.touches[0].clientX - myCanvas.getBoundingClientRect().left);
+      let y = roundNearest(lastMoveCoordinates.touches[0].clientY - myCanvas.getBoundingClientRect().top);
+      contextRef.current.beginPath()
+      contextRef.current.moveTo(point.x, point.y)
+      contextRef.current.lineTo(x, y);
+      contextRef.current.stroke();
+      writeLineLengths(point.x, point.y, x, y)
+      if (connectedLines.length < 1) {
+        connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1,isLineRed:false}])
+      } else {
+        connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1,isLineRed:false})
+      }
+    }else if(nativeEvent.type =="mouseup"){
+      console.log("mousemove")
+      const { offsetX, offsetY } = nativeEvent;
+      const x = roundNearest(offsetX);
+      const y = roundNearest(offsetY);
+      contextRef.current.beginPath()
+      contextRef.current.moveTo(point.x, point.y)
+      contextRef.current.lineTo(x, y);
+      contextRef.current.stroke();
+      writeLineLengths(point.x, point.y, x, y)
+      if (connectedLines.length < 1) {
+        connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1,isLineRed:false}])
+      } else {
+        connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1,isLineRed:false})
+      }
+    }
     const currentLength = document.getElementById("lenPointNum")
     setLineConnected(false)
     currentLength.style.opacity = 0
-    const { offsetX, offsetY } = nativeEvent;
-    const x = roundNearest(offsetX);
-    const y = roundNearest(offsetY);
-    contextRef.current.beginPath()
-    contextRef.current.moveTo(point.x, point.y)
-    contextRef.current.lineTo(x, y);
-    contextRef.current.stroke();
-    writeLineLengths(point.x, point.y, x, y)
-    if (connectedLines.length < 1) {
-      connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1,isLineRed:false}])
-    } else {
-      connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1,isLineRed:false})
-    }
+
     setIsDrawing(false)
     isLineConnected()
     contextRef.current.closePath();
     lenPointDiv.innerText = ""
   }
   const draw = ({ nativeEvent }) => {
+    const myCanvas = document.getElementById("myCanvas")
     if (!isDrawing) {
       return
     }
-    const { offsetX, offsetY } = nativeEvent;
-    const x = roundNearest(offsetX);
-    const y = roundNearest(offsetY);
-    setLengthPoint(calculateLength(point.x, point.y, x, y))
-    setMousePoint([offsetX, offsetY])
+    if(nativeEvent.type == "touchmove"){
+      let x = roundNearest(nativeEvent.touches[0].clientX - myCanvas.getBoundingClientRect().left);
+      let y = roundNearest(nativeEvent.touches[0].clientY - myCanvas.getBoundingClientRect().top);
+      setLengthPoint(calculateLength(point.x, point.y, x, y))
+      setMousePoint([x, y])
+      console.log("touchmove",x,y)
+      setLastMoveCoordinates(nativeEvent)
+    }else if(nativeEvent.type =="mousemove"){
+      console.log("mousemove")
+      const { offsetX, offsetY } = nativeEvent;
+      const x = roundNearest(offsetX);
+      const y = roundNearest(offsetY);
+      setLengthPoint(calculateLength(point.x, point.y, x, y))
+      setMousePoint([offsetX, offsetY])
+    }
+
+
+
   }
   const undo = () => {
     connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
@@ -352,31 +399,33 @@ export default function DrawingDiv(props) {
   }
 
   return (
-    <div id="main" className="bg-gray-900">
-      <div className="roomName text-center text-gray-400"><h1>you'r in {currentRoom}</h1></div>
-      <hr className="mt-2 border-b-4 border-b-emerald-500"/>
-      <h1 style={myStyle} id="lenPointNum">{lengthPoint}</h1>
-      <div className="flex flex-row w-full h-24">
-        <div  id="existingRoomsAtFloor" className="text-gray-400 scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-11/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
+    <div id="main" className="bg-gray-900 w-full h-full max-h-screen  flex flex-col">
+
+      <h1 style={myStyle} id="lenPointNum" className="z-40">{lengthPoint}</h1>
+      <div className="flex flex-row w-full h-1/10">
+        <div  id="existingRoomsAtFloor" className="text-gray-400 scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
-        <div className="w-1/12   flex flex-col items-center justify-evenly">
+        <div className="w-2/12   flex flex-col items-center justify-evenly">
           <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 border-l-0 border-r-0 hover:bg-gray-900 hover:border-white h-11 text-gray-400 bg-gray-700 border-solid border border-black w-full border-black    border-b-2 border-b-emerald-500"  id="undoBtt" onClick={undo}>
             undo
           </button>
           <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 hover:bg-gray-900 border-r-0 hover:border-white text-gray-400 bg-gray-700 h-11 border-l-0 border-solid w-full border-b-2 border-b-emerald-500" onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
         </div>
       </div>
-      <div  style={{ position: "relative"}} className="overflow-hidden" id="canvasDiv">
-        <div className="text-emerald-500" id="spanDiv">
+      <div  style={{ position: "relative"}} className="overflow-hidden h-9/10" id="canvasDiv">
+        <div className="text-emerald-500 " id="spanDiv">
 
         </div>
-        <div>
-        <canvas className="bg-gray-900" id="myCanvas"
-                onMouseDown={startDrawing}
-                onMouseUp={finishDrawing}
-                onMouseMove={draw}
-                ref={canvasRef}
-        />
+        <div className="w-full h-full">
+          <canvas className="bg-gray-900 " id="myCanvas"
+                  onMouseDown={startDrawing}
+                  onMouseUp={finishDrawing}
+                  onMouseMove={draw}
+                  onTouchStart={startDrawing}
+                  onTouchEnd={finishDrawing}
+                  onTouchMove={draw}
+                  ref={canvasRef}
+          />
       </div>
       </div>
     </div>

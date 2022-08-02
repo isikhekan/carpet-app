@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component,Keyboard,TouchableWithoutFeedback } from 'react'
 import Draw from './Draw'
 
 class Manage extends Component {
@@ -46,6 +46,7 @@ class Manage extends Component {
       selectedRoom: options[selectedRoom.selectedIndex].text,
     })
   }
+
   addRoom = () => {
     const id = document.getElementById("roomName").value
     const roomInput = document.createTextNode(id)
@@ -68,7 +69,7 @@ class Manage extends Component {
 
   render() {
     return (
-      <div className="text-xs sm:text-lg w-screen h-screen flex flex-row relative">
+      <div className="text-xs sm:text-lg w-screen h-screen flex flex-row relative touch-none" >
         <div id="openMenuSection" onClick={this.showMenuSection} className="absolute z-50 md:z-0 top-0 left-0   shadow-2xl">
           <svg  color="grey" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -121,7 +122,7 @@ class Manage extends Component {
                     <div className="w-full flex justify-center items-center">
                       <button
                         className="active:bg-emerald-500  active:border-b-gray-100 active:text-gray-700 hover:bg-gray-900  border-solid outline-0 bg-gray-700 text-gray-400 italic h-6 border-0 mt-2.5  w-full max-w-10.5 border-b-emerald-400 border-b-2 border-b-emerald-500"
-                        disabled={!this.state.roomNameIsValid} onClick={this.addRoom} type="submit">Submit
+                        disabled={!this.state.roomNameIsValid} onClick={this.addRoom}   type="submit">Submit
                       </button>
                     </div>
                   </div>

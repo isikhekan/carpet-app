@@ -30,8 +30,7 @@ export default function DrawingDiv(props) {
     const canvas = canvasRef.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    canvas.style.width = window.innerWidth;
-    canvas.style.height = window.innerHeight;
+
     const context = canvas.getContext("2d");
     context.scale(1, 1);
     context.lineCap = "round";

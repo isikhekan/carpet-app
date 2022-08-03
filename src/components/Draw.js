@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
 import '../App.css';
-import { matches } from "@testing-library/jest-dom/dist/utils";
 let connectedLines = []
 let connectedLineCounter = 0;
 export default function DrawingDiv(props) {
@@ -14,13 +13,14 @@ export default function DrawingDiv(props) {
   const [globalDotDistance, setGlobalDotDistance] = useState(20)
   const [mousePoint, setMousePoint] = useState([0, 0])
   const [lineConnected, setLineConnected] = useState(false)
+  const [isLinesConnectedSomewhere,setIsLinesConnectedSomewhere] = useState(false)
   const lineDiv = document.getElementById("spanDiv")
   const [roomNumber, setRoomNumber] = useState(0)
   const lenPointDiv = document.getElementById("lenPointNum")
   const [connectedLineNameCounter,setConnectedLineNameCounter] = useState(0)
   const myStyle = {
     position: "absolute",
-    color: "white",
+    color: "black",
     left: mousePoint[0],
     top: mousePoint[1]  ,
     userSelect: "none",
@@ -30,11 +30,8 @@ export default function DrawingDiv(props) {
     const canvas = canvasRef.current;
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     const context = canvas.getContext("2d");
-    context.scale(1, 1);
     context.lineCap = "round";
-    context.strokeStyle = "#cacccf";
     context.lineWidth = 2;
     contextRef.current = context;
     for (let i = 0; i < canvas.width; i += globalDotDistance) {
@@ -43,6 +40,7 @@ export default function DrawingDiv(props) {
         context.arc(i, j, 1, 0, Math.PI * 2);
       }
     }
+    context.strokeStyle = "black";
     context.stroke();
   }, [])
   useEffect(() => {
@@ -51,12 +49,23 @@ export default function DrawingDiv(props) {
   useEffect(() => {
     getRoomContent()
   }, [currentRoom])
+  const isTwoLineConnected = (x,y)=>{
+    console.log(x,y)
+    for(let i = 0;i<connectedLines[connectedLineCounter].length-1;i++){
+      if(x === connectedLines[connectedLineCounter][i].x.x2 && y === connectedLines[connectedLineCounter][i].y.y2){
+        return true
+      }
+    }
+
+  }
   const isLineConnected = () => {
-    const startX = connectedLines[connectedLineCounter][0].x.x1;
-    const startY = connectedLines[connectedLineCounter][0].y.y1;
     const endX  = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
     const endY = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y2;
-      if (startX === endX && startY === endY ) {
+    console.log(isTwoLineConnected(endX,endY)
+    )
+    const startX = connectedLines[connectedLineCounter][0].x.x1;
+    const startY = connectedLines[connectedLineCounter][0].y.y1;
+      if (isTwoLineConnected(endX,endY) || startX === endX && startY === endY) {
       setLineConnected(true)
       connectedLineCounter += 1
       connectedLines = [...connectedLines, []]
@@ -75,7 +84,7 @@ export default function DrawingDiv(props) {
     const createRoomNumberSpan = document.createElement("span");
     createRoomNumberSpan.innerText = roomNum;
     whereToAdd.appendChild(createRoomNumberSpan)
-    createRoomNumberSpan.style.color = "#4bc496"
+    createRoomNumberSpan.style.color = "#3c34d1"
     createRoomNumberSpan.style.position = "absolute";
     createRoomNumberSpan.style.top = startY + "px";
     createRoomNumberSpan.style.left = startX +"px";
@@ -90,7 +99,21 @@ export default function DrawingDiv(props) {
       for(let i = 0; i<connectedLines.length-1;i++){
         connectedLines[i].forEach((path)=>{
           if(path.id === targetId){
-            path.isLineRed  ? context.strokeStyle = "grey" : context.strokeStyle = "#4bc496"
+            path.isLineRed  ? context.strokeStyle = "black" : context.strokeStyle = "red"
+            context.beginPath();
+            context.moveTo(path.x.x1, path.y.y1);
+            context.lineTo(path.x.x2, path.y.y2);
+            context.stroke()
+            context.closePath();
+            path.isLineRed = !path.isLineRed
+          }
+        })
+      }
+    }else {
+      for(let i = 0; i<connectedLines.length-1;i++){
+        connectedLines[i].forEach((path)=>{
+          if(path.id === targetId){
+            path.isLineRed  ? context.strokeStyle = "black" : context.strokeStyle = "red"
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
             context.lineTo(path.x.x2, path.y.y2);
@@ -135,7 +158,6 @@ export default function DrawingDiv(props) {
     lineDiv.appendChild(createSpan)
 
     createSpan.style.position = 'absolute'
-    createSpan.style.background = "black"
     createSpan.style.fontSize = 0.8 + "vh"
     createSpan.style.borderRadius = 10
     createSpan.style.top = Math.round((y1 + y2) / 2) + 'px'
@@ -162,13 +184,13 @@ export default function DrawingDiv(props) {
       createDiv.style.justifyContent = "center"
       createDiv.style.alignItems = "center"
       createSpan.style.textAlign= "center"
-      createSpan.style.border = `1px solid white`
+      createSpan.style.border = `1px solid black`
       createSpan.style.height = `100%`
       createSpan.style.display  ="flex"
       createSpan.style.justifyContent = "center"
       createInp.addEventListener("input",changeConnectedLinesTotalPiece)
       createInp.type = "number"
-      createInp.style.border = `2px solid #4bc496`
+      createInp.style.border = `2px solid black`
       createInp.value = room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece;
       createInp.min = 1;
       createInp.style.height = `1.8rem`
@@ -178,7 +200,7 @@ export default function DrawingDiv(props) {
       createInp.style.width = `50%`
       createDeleteButtonSpan.style.height =`1.6rem`
       createDeleteButtonSpan.classList.add("deleteRoomButton")
-      createDeleteButtonSpan.innerHTML = "<svg height='100%' color='#4bc496' xmlns=\"http://www.w3.org/2000/svg\" className=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" strokeWidth={2}>\n" +
+      createDeleteButtonSpan.innerHTML = "<svg height='100%' color='black' xmlns=\"http://www.w3.org/2000/svg\" className=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" strokeWidth={2}>\n" +
         "  <path strokeLinecap=\"round\" strokeLinejoin=\"round\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\" />\n" +
         "</svg>"
       createDeleteButtonSpan.addEventListener("click",deleteSelectedLines)
@@ -186,6 +208,7 @@ export default function DrawingDiv(props) {
       createSpan.style.flexDirection = "column"
       createSpan.setAttribute("id",room[currentRoomIndex].coordinates.connectedLines[i][0].id)
       createSpan.addEventListener("click", glowSelectedRoom)
+
       const createText = document.createTextNode(room[currentRoomIndex].coordinates.connectedLines[i][0].id)
       createSpan.appendChild(createText)
       createSpan.appendChild(createDiv)
@@ -221,7 +244,7 @@ export default function DrawingDiv(props) {
   const getRoomContent = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    context.strokeStyle = "#cacccf"
+    context.strokeStyle = "black"
     contextRef.current.clearRect(0, 0, canvas.width, canvas.height)
     document.getElementById("spanDiv").innerHTML = ""
     document.getElementById("lenPointNum").innerText = "";
@@ -272,14 +295,15 @@ export default function DrawingDiv(props) {
   }
   const startDrawing = ({ nativeEvent }) => {
     const myCanvas = document.getElementById("myCanvas")
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.strokeStyle = "black"
     if(nativeEvent.type == "touchstart"){
-      console.log(nativeEvent.touches,"basladi")
       let x = roundNearest(nativeEvent.touches[0].clientX - myCanvas.getBoundingClientRect().left);
       let y = roundNearest(nativeEvent.touches[0].clientY - myCanvas.getBoundingClientRect().top);
       contextRef.current.beginPath();
       setPoint({ x, y })
     }else if(nativeEvent.type =="mousedown"){
-      console.log("mousemove")
       const { offsetX, offsetY } = nativeEvent;
       const x = roundNearest(offsetX);
       const y = roundNearest(offsetY);
@@ -297,9 +321,7 @@ export default function DrawingDiv(props) {
   }
   const finishDrawing = ({ nativeEvent }) => {
     const myCanvas = document.getElementById("myCanvas")
-    console.log(lastMoveCoordinates)
     if(nativeEvent.type == "touchend"){
-      console.log(nativeEvent.touches)
       let x = roundNearest(lastMoveCoordinates.touches[0].clientX - myCanvas.getBoundingClientRect().left);
       let y = roundNearest(lastMoveCoordinates.touches[0].clientY - myCanvas.getBoundingClientRect().top);
       contextRef.current.beginPath()
@@ -313,7 +335,6 @@ export default function DrawingDiv(props) {
         connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1,isLineRed:false})
       }
     }else if(nativeEvent.type =="mouseup"){
-      console.log("mousemove")
       const { offsetX, offsetY } = nativeEvent;
       const x = roundNearest(offsetX);
       const y = roundNearest(offsetY);
@@ -347,10 +368,8 @@ export default function DrawingDiv(props) {
       let y = roundNearest(nativeEvent.touches[0].clientY - myCanvas.getBoundingClientRect().top);
       setLengthPoint(calculateLength(point.x, point.y, x, y))
       setMousePoint([x, y])
-      console.log("touchmove",x,y)
       setLastMoveCoordinates(nativeEvent)
     }else if(nativeEvent.type =="mousemove"){
-      console.log("mousemove")
       const { offsetX, offsetY } = nativeEvent;
       const x = roundNearest(offsetX);
       const y = roundNearest(offsetY);
@@ -398,25 +417,25 @@ export default function DrawingDiv(props) {
   }
 
   return (
-    <div id="main" className="bg-gray-900 w-full h-full max-h-screen  flex flex-col">
+    <div id="main" className=" w-full h-full max-h-screen  flex flex-col">
 
       <h1 style={myStyle} id="lenPointNum" className="z-40">{lengthPoint}</h1>
       <div className="flex flex-row w-full h-1/10">
-        <div  id="existingRoomsAtFloor" className="text-gray-400 scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
+        <div  id="existingRoomsAtFloor" className="text-black scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
         <div className="w-2/12   flex flex-col items-center justify-evenly">
-          <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 border-l-0 border-r-0 hover:bg-gray-900 hover:border-white h-11 text-gray-400 bg-gray-700 border-solid border border-black w-full border-black    border-b-2 border-b-emerald-500"  id="undoBtt" onClick={undo}>
+          <button className="active:border-b-gray-100 hover:bg-gray-400   rounded-md hover:border-white h-11 text-black  border-solid border border-black w-full border-black border-2 "  id="undoBtt" onClick={undo}>
             undo
           </button>
-          <button className="active:bg-emerald-500 active:border-b-gray-100 active:text-gray-700 hover:bg-gray-900 border-r-0 hover:border-white text-gray-400 bg-gray-700 h-11 border-l-0 border-solid w-full border-b-2 border-b-emerald-500" onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
+          <button className="active:border-b-gray-100 hover:bg-gray-400 rounded-md hover:border-white text-black h-11  w-full border-2" onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
         </div>
       </div>
       <div  style={{ position: "relative"}} className="overflow-hidden h-9/10" id="canvasDiv">
-        <div className="text-emerald-500 " id="spanDiv">
+        <div className="text-blue-400 " id="spanDiv">
 
         </div>
         <div className="w-full h-full">
-          <canvas className="bg-gray-900 " id="myCanvas"
+          <canvas className=" " id="myCanvas"
                   onMouseDown={startDrawing}
                   onMouseUp={finishDrawing}
                   onMouseMove={draw}

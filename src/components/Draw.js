@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import '../App.css';
 import SelectMenu from "./SelectMenu";
-import ReactDom from "react-dom";
+import ReactDom from "react-dom/client";
 
 let connectedLines = []
 let connectedLineCounter = 0;
@@ -182,7 +182,7 @@ export default function DrawingDiv(props) {
       const createTypeSpan = document.createElement("span")
       createSpan.appendChild(createTypeSpan)
       const root = ReactDom.createRoot(createTypeSpan);
-      root.render(<SelectMenu values = {["asdasd","ffff","gggg"]}/>)
+      root.render(<SelectMenu defaultOption={{value: "multi-pieced", label: "Multi Piece"}} options = {[{value: "multi-pieced", label: "Multi Piece"},{value: "one-piece", label: "One Piece"}]}/>)
       createDiv.style.width = `100%`
       const createDeleteButtonSpan = document.createElement("span");
       const createInp = document.createElement("input");
@@ -296,12 +296,12 @@ export default function DrawingDiv(props) {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.strokeStyle = "black"
-    if (nativeEvent.type == "touchstart") {
+    if (nativeEvent.type === "touchstart") {
       let x = roundNearest(nativeEvent.touches[0].clientX - myCanvas.getBoundingClientRect().left);
       let y = roundNearest(nativeEvent.touches[0].clientY - myCanvas.getBoundingClientRect().top);
       contextRef.current.beginPath();
       setPoint({ x, y })
-    } else if (nativeEvent.type == "mousedown") {
+    } else if (nativeEvent.type === "mousedown") {
       const { offsetX, offsetY } = nativeEvent;
       const x = roundNearest(offsetX);
       const y = roundNearest(offsetY);

@@ -1,11 +1,11 @@
-import React from "react";
+/**import React from "react";
 const SelectMenu = (props)=>{
   const { values } = props
   return(
     <div className="w-full h-7 selectSection">
-      <select className="border-white bg-gray-200 rounded-md bg-gray-400 w-24 text-center h-7 outline-0 border-b-2 border-b-gray-500" name="" id="">
+      <select className="" name="" id="">
         {values.map((item)=>(
-          <option className="" value={item}>
+          <option className="border-0" value={item}>
             {item}
           </option>
         ))}
@@ -16,3 +16,60 @@ const SelectMenu = (props)=>{
 
 }
 export default SelectMenu
+/* This example requires Tailwind CSS v2.0+ **/
+import { Menu, Transition } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/solid'
+import React, { useEffect, Fragment, useState } from "react"
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
+export default function SelectMenu({ defaultOption, options }) {
+  const [ selectedOption, setSelectedOption ] = useState(defaultOption)
+
+  function selectOption(option){
+    setSelectedOption(option)
+  }
+
+  return (
+    <Menu as="div" className="relative inline-block text-left">
+      <div>
+        <Menu.Button className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+          {selectedOption ? selectedOption.label : 'Select'}
+          <ChevronDownIcon className="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+        </Menu.Button>
+      </div>
+
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="transform opacity-0 scale-95"
+        enterTo="transform opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="transform opacity-100 scale-100"
+        leaveTo="transform opacity-0 scale-95"
+      >
+        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+          {options.map((option, idx) => (
+            <div key={idx} className={"py-"+idx}>
+              <Menu.Item key={idx} onClick={()=> {selectOption(option)}}>
+                {({ active }) => (
+                  <a
+                    href="#"
+                    className={classNames(
+                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      'block px-4 py-2 text-sm'
+                    )}
+                  >
+                    {option.label}
+                  </a>
+                )}
+              </Menu.Item>
+            </div>
+          ))}
+        </Menu.Items>
+      </Transition>
+    </Menu>
+  )
+}

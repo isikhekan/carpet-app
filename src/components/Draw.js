@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from "react"
 import '../App.css';
+import SelectMenu from "./SelectMenu";
+import ReactDom from "react-dom";
+
 let connectedLines = []
 let connectedLineCounter = 0;
 export default function DrawingDiv(props) {
   const { room, currentRoom, currentRoomIndex } = props
-  const [lastMoveCoordinates,setLastMoveCoordinates] = useState({})
+  const [lastMoveCoordinates, setLastMoveCoordinates] = useState({})
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
   const [isDrawing, setIsDrawing] = useState(false)
@@ -13,16 +16,16 @@ export default function DrawingDiv(props) {
   const [globalDotDistance, setGlobalDotDistance] = useState(20)
   const [mousePoint, setMousePoint] = useState([0, 0])
   const [lineConnected, setLineConnected] = useState(false)
-  const [isLinesConnectedSomewhere,setIsLinesConnectedSomewhere] = useState(false)
+  const [isLinesConnectedSomewhere, setIsLinesConnectedSomewhere] = useState(false)
   const lineDiv = document.getElementById("spanDiv")
   const [roomNumber, setRoomNumber] = useState(0)
   const lenPointDiv = document.getElementById("lenPointNum")
-  const [connectedLineNameCounter,setConnectedLineNameCounter] = useState(0)
+  const [connectedLineNameCounter, setConnectedLineNameCounter] = useState(0)
   const myStyle = {
     position: "absolute",
     color: "black",
     left: mousePoint[0],
-    top: mousePoint[1]  ,
+    top: mousePoint[1],
     userSelect: "none",
     opacity: 0
   }
@@ -44,42 +47,42 @@ export default function DrawingDiv(props) {
     context.stroke();
   }, [])
   useEffect(() => {
-      getRoomContent()
-    },[connectedLineCounter])
+    getRoomContent()
+  }, [connectedLineCounter])
   useEffect(() => {
     getRoomContent()
   }, [currentRoom])
-  const isTwoLineConnected = (x,y)=>{
-    console.log(x,y)
-    for(let i = 0;i<connectedLines[connectedLineCounter].length-1;i++){
-      if(x === connectedLines[connectedLineCounter][i].x.x2 && y === connectedLines[connectedLineCounter][i].y.y2){
+  const isTwoLineConnected = (x, y) => {
+    console.log(x, y)
+    for (let i = 0; i < connectedLines[connectedLineCounter].length - 1; i++) {
+      if (x === connectedLines[connectedLineCounter][i].x.x2 && y === connectedLines[connectedLineCounter][i].y.y2) {
         return true
       }
     }
 
   }
   const isLineConnected = () => {
-    const endX  = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
+    const endX = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
     const endY = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y2;
-    console.log(isTwoLineConnected(endX,endY)
+    console.log(isTwoLineConnected(endX, endY)
     )
     const startX = connectedLines[connectedLineCounter][0].x.x1;
     const startY = connectedLines[connectedLineCounter][0].y.y1;
-      if (isTwoLineConnected(endX,endY) || startX === endX && startY === endY) {
+    if (isTwoLineConnected(endX, endY) || startX === endX && startY === endY) {
       setLineConnected(true)
       connectedLineCounter += 1
       connectedLines = [...connectedLines, []]
-      addWhatIsRoomNumber(startX,startY,connectedLineCounter)
+      addWhatIsRoomNumber(startX, startY, connectedLineCounter)
       const nameCounter = connectedLineNameCounter
-      setConnectedLineNameCounter(nameCounter+1)
-      } else {
+      setConnectedLineNameCounter(nameCounter + 1)
+    } else {
       connectedLines = [...connectedLines]
     }
     room[currentRoomIndex].coordinates.connectedLines = connectedLines
     room[currentRoomIndex].coordinates.connectedLineCounter = connectedLineCounter
     lineConnected ? getExistingRooms() : console.log("not yet")
   }
-  const addWhatIsRoomNumber = (startX,startY,roomNum = 1)=>{
+  const addWhatIsRoomNumber = (startX, startY, roomNum = 1) => {
     const whereToAdd = document.getElementById("spanDiv");
     const createRoomNumberSpan = document.createElement("span");
     createRoomNumberSpan.innerText = roomNum;
@@ -87,19 +90,19 @@ export default function DrawingDiv(props) {
     createRoomNumberSpan.style.color = "#3c34d1"
     createRoomNumberSpan.style.position = "absolute";
     createRoomNumberSpan.style.top = startY + "px";
-    createRoomNumberSpan.style.left = startX +"px";
+    createRoomNumberSpan.style.left = startX + "px";
     createRoomNumberSpan.userSelect = "none";
   }
 
-  const glowSelectedRoom = (e)=>{
+  const glowSelectedRoom = (e) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     const targetId = e.target.id
-    if(connectedLines[connectedLines.length-1].length<1){
-      for(let i = 0; i<connectedLines.length-1;i++){
-        connectedLines[i].forEach((path)=>{
-          if(path.id === targetId){
-            path.isLineRed  ? context.strokeStyle = "black" : context.strokeStyle = "red"
+    if (connectedLines[connectedLines.length - 1].length < 1) {
+      for (let i = 0; i < connectedLines.length - 1; i++) {
+        connectedLines[i].forEach((path) => {
+          if (path.id === targetId) {
+            path.isLineRed ? context.strokeStyle = "black" : context.strokeStyle = "red"
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
             context.lineTo(path.x.x2, path.y.y2);
@@ -109,11 +112,11 @@ export default function DrawingDiv(props) {
           }
         })
       }
-    }else {
-      for(let i = 0; i<connectedLines.length-1;i++){
-        connectedLines[i].forEach((path)=>{
-          if(path.id === targetId){
-            path.isLineRed  ? context.strokeStyle = "black" : context.strokeStyle = "red"
+    } else {
+      for (let i = 0; i < connectedLines.length - 1; i++) {
+        connectedLines[i].forEach((path) => {
+          if (path.id === targetId) {
+            path.isLineRed ? context.strokeStyle = "black" : context.strokeStyle = "red"
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
             context.lineTo(path.x.x2, path.y.y2);
@@ -125,28 +128,28 @@ export default function DrawingDiv(props) {
       }
     }
   }
-  const deleteSelectedLines = (e)=>{
+  const deleteSelectedLines = (e) => {
     const targetId = e.target.parentNode.parentNode.id;
-    for(let i = 0;i<connectedLines.length-1;i++){
-      if(String(connectedLines[i][0].id) === targetId){
-        connectedLines.splice(i,1)
+    for (let i = 0; i < connectedLines.length - 1; i++) {
+      if (String(connectedLines[i][0].id) === targetId) {
+        connectedLines.splice(i, 1)
         room[currentRoomIndex].coordinates.connectedLines = connectedLines
-        room[currentRoomIndex].coordinates.connectedLineCounter -=1
+        room[currentRoomIndex].coordinates.connectedLineCounter -= 1
         connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
       }
     }
     getRoomContent()
   }
-  const changeConnectedLinesTotalPiece = (e)=>{
+  const changeConnectedLinesTotalPiece = (e) => {
     const existingRooms = document.getElementById("existingRoomsAtFloor")
     let roomIndex = undefined;
-    for(let i = 0 ; i<existingRooms.children.length; i++ ){
-      if(existingRooms.children[i].id ===e.target.parentNode.parentNode.id){
+    for (let i = 0; i < existingRooms.children.length; i++) {
+      if (existingRooms.children[i].id === e.target.parentNode.parentNode.id) {
         roomIndex = i;
       }
     }
-    room[currentRoomIndex].coordinates.connectedLines[roomIndex].forEach((path)=>{
-      path.totalPiece  = parseInt(e.target.value)
+    room[currentRoomIndex].coordinates.connectedLines[roomIndex].forEach((path) => {
+      path.totalPiece = parseInt(e.target.value)
       connectedLines = room[currentRoomIndex].coordinates.connectedLines
       room[currentRoomIndex].coordinates.connectedLines = connectedLines
     })
@@ -170,45 +173,40 @@ export default function DrawingDiv(props) {
   const calculateLength = (x, y, mouseX, mouseY) => {
     return Math.round(Math.sqrt((Math.pow(Math.abs(mouseX - x), 2) + (Math.pow(Math.abs(mouseY - y), 2)))))
   }
-  const getExistingRooms = ()=>{
+  const getExistingRooms = () => {
     const existingRoomDiv = document.getElementById("existingRoomsAtFloor")
     existingRoomDiv.innerHTML = ""
-    for(let i  = 0;i<room[currentRoomIndex].coordinates.connectedLineCounter;i++){
-      const createSpan  = document.createElement("span");
+    for (let i = 0; i < room[currentRoomIndex].coordinates.connectedLineCounter; i++) {
+      const createSpan = document.createElement("span");
       const createDiv = document.createElement("div")
+      const createTypeSpan = document.createElement("span")
+      createSpan.appendChild(createTypeSpan)
+      const root = ReactDom.createRoot(createTypeSpan);
+      root.render(<SelectMenu values = {["asdasd","ffff","gggg"]}/>)
       createDiv.style.width = `100%`
       const createDeleteButtonSpan = document.createElement("span");
       const createInp = document.createElement("input");
+      createDiv.innerHTML += "<span>Total Piece</span>"
       createDiv.appendChild(createInp)
-      createDiv.style.display = "flex"
-      createDiv.style.justifyContent = "center"
-      createDiv.style.alignItems = "center"
-      createSpan.style.textAlign= "center"
-      createSpan.style.border = `1px solid black`
-      createSpan.style.height = `100%`
-      createSpan.style.display  ="flex"
-      createSpan.style.justifyContent = "center"
-      createInp.addEventListener("input",changeConnectedLinesTotalPiece)
+      createDiv.classList.add("flex", "justify-center", "items-center")
+      createSpan.classList.add("text-center", "border-1", "border-solid", "h-full", "flex","w-48","justify-center", "items-center")
+      createInp.addEventListener("input", changeConnectedLinesTotalPiece)
       createInp.type = "number"
-      createInp.style.border = `2px solid black`
+      createInp.classList.add("border-2", "border-solid", "h-6", "outline-0", "rounded-md", "text-center", "ml-1")
       createInp.value = room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece;
       createInp.min = 1;
-      createInp.style.height = `1.8rem`
-      createInp.style.outline = "none"
-      createInp.style.borderRadius = `3rem`
-      createInp.style.textAlign  = "center"
-      createInp.style.width = `50%`
-      createDeleteButtonSpan.style.height =`1.6rem`
+      createInp.style.width = `35%`
+      createDeleteButtonSpan.style.height = `1.6rem`
       createDeleteButtonSpan.classList.add("deleteRoomButton")
+      createDeleteButtonSpan.style.width = `50%`
       createDeleteButtonSpan.innerHTML = "<svg height='100%' color='black' xmlns=\"http://www.w3.org/2000/svg\" className=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" strokeWidth={2}>\n" +
         "  <path strokeLinecap=\"round\" strokeLinejoin=\"round\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\" />\n" +
         "</svg>"
-      createDeleteButtonSpan.addEventListener("click",deleteSelectedLines)
+      createDeleteButtonSpan.addEventListener("click", deleteSelectedLines)
       createSpan.classList.add("existingRoomsStyle")
       createSpan.style.flexDirection = "column"
-      createSpan.setAttribute("id",room[currentRoomIndex].coordinates.connectedLines[i][0].id)
+      createSpan.setAttribute("id", room[currentRoomIndex].coordinates.connectedLines[i][0].id)
       createSpan.addEventListener("click", glowSelectedRoom)
-
       const createText = document.createTextNode(room[currentRoomIndex].coordinates.connectedLines[i][0].id)
       createSpan.appendChild(createText)
       createSpan.appendChild(createDiv)
@@ -216,12 +214,12 @@ export default function DrawingDiv(props) {
       existingRoomDiv.appendChild(createSpan)
     }
   }
-  const getRoomNumbers = ()=>{
-    for(let i = 0;i<connectedLines.length-1;i++){
-      addWhatIsRoomNumber(connectedLines[i][0].x.x1,connectedLines[i][0].y.y1,room[currentRoomIndex].coordinates.connectedLines[i][0].id)
+  const getRoomNumbers = () => {
+    for (let i = 0; i < connectedLines.length - 1; i++) {
+      addWhatIsRoomNumber(connectedLines[i][0].x.x1, connectedLines[i][0].y.y1, room[currentRoomIndex].coordinates.connectedLines[i][0].id)
     }
   }
-  const clearAllFloor = ()=>{
+  const clearAllFloor = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     contextRef.current.clearRect(0, 0, canvas.width, canvas.height)
@@ -258,10 +256,10 @@ export default function DrawingDiv(props) {
     context.stroke()
     connectedLines = room[currentRoomIndex].coordinates.connectedLines
     connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
-    if(connectedLines.length) {
-      if(connectedLines[connectedLines.length-1].length<1){
-        for(let i = 0; i<connectedLines.length-1;i++){
-          connectedLines[i].forEach((path)=>{
+    if (connectedLines.length) {
+      if (connectedLines[connectedLines.length - 1].length < 1) {
+        for (let i = 0; i < connectedLines.length - 1; i++) {
+          connectedLines[i].forEach((path) => {
             path.isLineRed = false;
           })
         }
@@ -270,8 +268,8 @@ export default function DrawingDiv(props) {
 
     getExistingRooms()
     setRoomNumber(currentRoomIndex)
-    room[currentRoomIndex].coordinates.connectedLines.forEach((path)=>{
-      path.forEach((sPath)=>{
+    room[currentRoomIndex].coordinates.connectedLines.forEach((path) => {
+      path.forEach((sPath) => {
         context.beginPath();
         context.moveTo(sPath.x.x1, sPath.y.y1);
         context.lineTo(sPath.x.x2, sPath.y.y2);
@@ -280,15 +278,15 @@ export default function DrawingDiv(props) {
         const text = document.createTextNode(sPath.len)
         createSpan.appendChild(text)
         lineDiv.appendChild(createSpan)
-        createSpan.style.fontSize = .8 +"vh"
+        createSpan.style.fontSize = .8 + "vh"
         createSpan.style.position = 'absolute'
         createSpan.style.top = Math.round((sPath.y.y1 + sPath.y.y2) / 2) + 'px'
         createSpan.style.left = Math.round((sPath.x.x1 + sPath.x.x2) / 2) + 'px'
         createSpan.style.userSelect = "none"
       })
     })
-    if(connectedLines.length >1){
-      for(let i = 0;i<connectedLines.length-1;i++){
+    if (connectedLines.length > 1) {
+      for (let i = 0; i < connectedLines.length - 1; i++) {
         getRoomNumbers()
       }
     }
@@ -298,12 +296,12 @@ export default function DrawingDiv(props) {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.strokeStyle = "black"
-    if(nativeEvent.type == "touchstart"){
+    if (nativeEvent.type == "touchstart") {
       let x = roundNearest(nativeEvent.touches[0].clientX - myCanvas.getBoundingClientRect().left);
       let y = roundNearest(nativeEvent.touches[0].clientY - myCanvas.getBoundingClientRect().top);
       contextRef.current.beginPath();
       setPoint({ x, y })
-    }else if(nativeEvent.type =="mousedown"){
+    } else if (nativeEvent.type == "mousedown") {
       const { offsetX, offsetY } = nativeEvent;
       const x = roundNearest(offsetX);
       const y = roundNearest(offsetY);
@@ -321,32 +319,75 @@ export default function DrawingDiv(props) {
   }
   const finishDrawing = ({ nativeEvent }) => {
     const myCanvas = document.getElementById("myCanvas")
-    if(nativeEvent.type == "touchend"){
+    if (nativeEvent.type == "touchend") {
       let x = roundNearest(lastMoveCoordinates.touches[0].clientX - myCanvas.getBoundingClientRect().left);
       let y = roundNearest(lastMoveCoordinates.touches[0].clientY - myCanvas.getBoundingClientRect().top);
-      contextRef.current.beginPath()
-      contextRef.current.moveTo(point.x, point.y)
-      contextRef.current.lineTo(x, y);
-      contextRef.current.stroke();
-      writeLineLengths(point.x, point.y, x, y)
-      if (connectedLines.length < 1) {
-        connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1,isLineRed:false}])
+
+      if (point.x === x && point.y === y) {
+        alert("must be line")
       } else {
-        connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1,isLineRed:false})
+        contextRef.current.beginPath()
+        contextRef.current.moveTo(point.x, point.y)
+        contextRef.current.lineTo(x, y);
+        contextRef.current.stroke();
+        writeLineLengths(point.x, point.y, x, y)
+        if (connectedLines.length < 1) {
+          connectedLines.push([{
+            x: { x1: point.x, x2: x },
+            y: { y1: point.y, y2: y },
+            id: "a" + 1,
+            len: lengthPoint,
+            totalPiece: 1,
+            isLineRed: false,
+            type: "simple"
+          }])
+        } else {
+          connectedLines[connectedLineCounter].push({
+            x: { x1: point.x, x2: x },
+            y: { y1: point.y, y2: y },
+            id: "a" + connectedLineNameCounter,
+            len: lengthPoint,
+            totalPiece: 1,
+            isLineRed: false,
+            type: "simple"
+          })
+        }
       }
-    }else if(nativeEvent.type =="mouseup"){
+
+    } else if (nativeEvent.type == "mouseup") {
       const { offsetX, offsetY } = nativeEvent;
       const x = roundNearest(offsetX);
       const y = roundNearest(offsetY);
-      contextRef.current.beginPath()
-      contextRef.current.moveTo(point.x, point.y)
-      contextRef.current.lineTo(x, y);
-      contextRef.current.stroke();
-      writeLineLengths(point.x, point.y, x, y)
-      if (connectedLines.length < 1) {
-        connectedLines.push([{ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+1,len: lengthPoint,totalPiece : 1,isLineRed:false}])
+
+      if (point.x === x && point.y === y) {
+        alert("must be line")
       } else {
-        connectedLines[connectedLineCounter].push({ x: { x1: point.x, x2: x }, y: { y1: point.y, y2: y },id:"a"+connectedLineNameCounter, len: lengthPoint,totalPiece : 1,isLineRed:false})
+        contextRef.current.beginPath()
+        contextRef.current.moveTo(point.x, point.y)
+        contextRef.current.lineTo(x, y);
+        contextRef.current.stroke();
+        writeLineLengths(point.x, point.y, x, y)
+        if (connectedLines.length < 1) {
+          connectedLines.push([{
+            x: { x1: point.x, x2: x },
+            y: { y1: point.y, y2: y },
+            id: "a" + 1,
+            len: lengthPoint,
+            totalPiece: 1,
+            isLineRed: false,
+            type: "simple"
+          }])
+        } else {
+          connectedLines[connectedLineCounter].push({
+            x: { x1: point.x, x2: x },
+            y: { y1: point.y, y2: y },
+            id: "a" + connectedLineNameCounter,
+            len: lengthPoint,
+            totalPiece: 1,
+            isLineRed: false,
+            type: "simple"
+          })
+        }
       }
     }
     const currentLength = document.getElementById("lenPointNum")
@@ -363,13 +404,13 @@ export default function DrawingDiv(props) {
     if (!isDrawing) {
       return
     }
-    if(nativeEvent.type == "touchmove"){
+    if (nativeEvent.type == "touchmove") {
       let x = roundNearest(nativeEvent.touches[0].clientX - myCanvas.getBoundingClientRect().left);
       let y = roundNearest(nativeEvent.touches[0].clientY - myCanvas.getBoundingClientRect().top);
       setLengthPoint(calculateLength(point.x, point.y, x, y))
       setMousePoint([x, y])
       setLastMoveCoordinates(nativeEvent)
-    }else if(nativeEvent.type =="mousemove"){
+    } else if (nativeEvent.type == "mousemove") {
       const { offsetX, offsetY } = nativeEvent;
       const x = roundNearest(offsetX);
       const y = roundNearest(offsetY);
@@ -378,9 +419,9 @@ export default function DrawingDiv(props) {
     }
 
 
-
   }
   const undo = () => {
+    console.log("undo working")
     connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
     if (lineConnected) {
       connectedLines.pop();
@@ -407,9 +448,9 @@ export default function DrawingDiv(props) {
           connectedLines[connectedLineCounter].pop();
         }
       }
-
+      room[currentRoomIndex].coordinates.connectedLineCounter = connectedLineCounter
     }
-    for(let i = 0;i<connectedLines.length-1;i++){
+    for (let i = 0; i < connectedLines.length - 1; i++) {
       getRoomNumbers()
     }
     getRoomContent()
@@ -420,17 +461,23 @@ export default function DrawingDiv(props) {
     <div id="main" className=" w-full h-full max-h-screen  flex flex-col">
 
       <h1 style={myStyle} id="lenPointNum" className="z-40">{lengthPoint}</h1>
-      <div className="flex flex-row w-full h-1/10">
-        <div  id="existingRoomsAtFloor" className="text-black scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
+      <div className="flex flex-row w-full h-1.5/10">
+        <div id="existingRoomsAtFloor"
+             className="text-black scroll-smooth scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
         <div className="w-2/12   flex flex-col items-center justify-evenly">
-          <button className="active:border-b-gray-100 hover:bg-gray-400   rounded-md hover:border-white h-11 text-black  border-solid border border-black w-full border-black border-2 "  id="undoBtt" onClick={undo}>
+          <button
+            className="active:border-b-gray-100 hover:bg-gray-400   rounded-md hover:border-white h-11 text-black  border-solid border border-black w-full border-black border-2 "
+            id="undoBtt" onClick={undo}>
             undo
           </button>
-          <button className="active:border-b-gray-100 hover:bg-gray-400 rounded-md hover:border-white text-black h-11  w-full border-2" onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor</button>
+          <button
+            className="active:border-b-gray-100 hover:bg-gray-400 rounded-md hover:border-white text-black h-11  w-full border-2"
+            onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor
+          </button>
         </div>
       </div>
-      <div  style={{ position: "relative"}} className="overflow-hidden h-9/10" id="canvasDiv">
+      <div style={{ position: "relative" }} className="overflow-hidden h-8.5/10" id="canvasDiv">
         <div className="text-blue-400 " id="spanDiv">
 
         </div>
@@ -444,7 +491,7 @@ export default function DrawingDiv(props) {
                   onTouchMove={draw}
                   ref={canvasRef}
           />
-      </div>
+        </div>
       </div>
     </div>
   )

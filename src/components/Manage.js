@@ -1,4 +1,4 @@
-import React, { Component,Keyboard,TouchableWithoutFeedback } from 'react'
+import React, { Component } from 'react'
 import Draw from './Draw'
 
 class Manage extends Component {
@@ -152,10 +152,9 @@ class Manage extends Component {
                   currentRoomIndex={this.state.selectedRoomIndex}
                 />
               ) : (
-                <h2 className="italic text-center">enter floor first</h2>
+                <h2 className="italic text-center ">enter floor first</h2>
               )}
             </div>
-
           </div>
         </div>
       </div>

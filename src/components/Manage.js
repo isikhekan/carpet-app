@@ -1,16 +1,23 @@
 import React, { Component } from 'react'
 import Draw from './Draw'
+import TextInput from './Input'
+import SelectMenu from './SelectMenu'
+import TextArea from './TextArea'
 
 class Manage extends Component {
   state = {
     rooms: [],
+    currentRoomName:"",
     selectedRoom: "",
     selectedRoomIndex: 0,
     roomNameIsValid: false,
   }
 
-  checkRoomNameIsValid = () => {
-    const roomNameIsValid = document.getElementById("roomName").value.length > 3;
+  checkRoomNameIsValid = (e) => {
+
+    const roomNameIsValid = e.length > 3;
+    this.currentRoomName = e
+    console.log(e,roomNameIsValid)
 
     this.setState({
       ...this.state,
@@ -48,11 +55,10 @@ class Manage extends Component {
   }
 
   addRoom = () => {
-    const id = document.getElementById("roomName").value
+    const id = this.currentRoomName
     const roomInput = document.createTextNode(id)
     const selectedRoom = document.getElementById("roomSelect");
     const options = selectedRoom.options;
-
     const option = document.createElement("option");
     option.setAttribute('id', id);
     selectedRoom.appendChild(option)
@@ -64,7 +70,6 @@ class Manage extends Component {
       selectedRoom: id,
       selectedRoomIndex: options[selectedRoom.selectedIndex].index
     })
-    document.getElementById("roomName").value = ""
   }
 
   render() {
@@ -84,40 +89,19 @@ class Manage extends Component {
               <div className="w-full h-full h-2/6   flex flex-row  ">
                 <div className=" h-full w-full flex flex-col justify-between items-start ">
                   <div className="h-full w-full flex flex-col">
-                    <label className="italic " htmlFor="userName">Name : </label>
-                    <input
-                      className="border-1 rounded-md max-w-20 userName w-full outline-0 text-center text-black h-8  italic   "
-                      type="text"/>
+                    <TextInput inputName="Name"/>
                   </div>
                   <div className="h-full w-full flex flex-col">
-                    <label className="h-1/5 italic" htmlFor="userAddress">Address: </label>
-                    <textarea style={{ resize: "none" }} name=""
-                              className="border-1 rounded-md max-w-20  h-24 outline-0 text-black italic  outline-0  text-center"></textarea>
+                      <TextArea areaName="Address"/>                    
                   </div>
                 </div>
               </div>
-
               <div className="w-full h-4/6 flex flex-col justify-around items-start text-black">
-                <div className="w-full h-16 flex justify-center ">
-                  <div className="w-4/5 flex flex-col items-center justify-center">
-                    <h4 className="italic text-center">Halı seçiniz</h4>
-                    <select className=" border-1 rounded-md max-w-10.5 italic w-3/4 outline-0 h-7 text-gray-400"
-                            name="carpetType" id="carpetType">
-                      <option value="">Düz</option>
-                      <option value="">Desenli</option>
-                      <option value="">Karışık</option>
-                    </select>
-                  </div>
-                </div>
+              
                 <div className="w-full h-16 flex justify-center mt-1">
                   <div className="w-4/5 flex flex-col items-center justify-center">
-                    <h4 className="italic ">Kat ismi giriniz</h4>
                     <div className="w-full flex justify-center items-center">
-                      <input
-                        className="border-1 rounded-md text-center text-black w-full max-w-10.5    h-8 border-solid border border-black outline-0 border-b-2 border-b-gray-600"
-                        onChange={this.checkRoomNameIsValid}
-                        placeholder='Enter floor / min. length 4' type="text" name="roomName"
-                        id="roomName"/>
+                      <TextInput onChange={this.checkRoomNameIsValid} inputName = "Floor Name"/>
                     </div>
                     <div className="w-full flex justify-center items-center">
                       <button
@@ -135,10 +119,7 @@ class Manage extends Component {
                     </select>
                   </div>
                 </div>
-
               </div>
-
-
             </div>
           </div>
         </div>

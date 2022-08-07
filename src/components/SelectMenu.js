@@ -1,25 +1,7 @@
-/**import React from "react";
-const SelectMenu = (props)=>{
-  const { values } = props
-  return(
-    <div className="w-full h-7 selectSection">
-      <select className="" name="" id="">
-        {values.map((item)=>(
-          <option className="border-0" value={item}>
-            {item}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-
-
-}
-export default SelectMenu
 /* This example requires Tailwind CSS v2.0+ **/
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
-import React, { useEffect, Fragment, useState } from "react"
+import React, { Fragment, useState } from "react"
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')

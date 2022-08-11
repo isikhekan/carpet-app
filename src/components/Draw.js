@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import '../App.css';
 import SelectMenu from "./SelectMenu";
 import ReactDom from "react-dom/client";
+import Button from "./Button"
 
 let connectedLines = []
 let connectedLineCounter = 0;
@@ -68,7 +69,7 @@ export default function DrawingDiv(props) {
     )
     const startX = connectedLines[connectedLineCounter][0].x.x1;
     const startY = connectedLines[connectedLineCounter][0].y.y1;
-    if (isTwoLineConnected(endX, endY) || startX === endX && startY === endY) {
+    if (isTwoLineConnected(endX, endY) || (startX === endX && startY === endY)) {
       setLineConnected(true)
       connectedLineCounter += 1
       connectedLines = [...connectedLines, []]
@@ -159,10 +160,10 @@ export default function DrawingDiv(props) {
     const text = document.createTextNode(lengthPoint.toString())
     createSpan.appendChild(text)
     lineDiv.appendChild(createSpan)
-
     createSpan.style.position = 'absolute'
-    createSpan.style.fontSize = 0.8 + "vh"
+    createSpan.style.fontSize = `2vh`
     createSpan.style.borderRadius = 10
+    createSpan.style.color = "#c20606"
     createSpan.style.top = Math.round((y1 + y2) / 2) + 'px'
     createSpan.style.left = Math.round((x2 + x1) / 2) + 'px'
     createSpan.style.userSelect = "none"
@@ -180,8 +181,11 @@ export default function DrawingDiv(props) {
       const createSpan = document.createElement("span");
       const createDiv = document.createElement("div")
       const createTypeSpan = document.createElement("span")
-      createSpan.appendChild(createTypeSpan)
       const root = ReactDom.createRoot(createTypeSpan);
+      createTypeSpan.classList.add("w-full")
+      const createText = document.createTextNode(room[currentRoomIndex].coordinates.connectedLines[i][0].id)
+      createSpan.appendChild(createText)
+      createSpan.appendChild(createTypeSpan)
       root.render(<SelectMenu defaultOption={{value: "multi-pieced", label: "Multi Piece"}} options = {[{value: "multi-pieced", label: "Multi Piece"},{value: "one-piece", label: "One Piece"}]}/>)
       createDiv.style.width = `100%`
       const createDeleteButtonSpan = document.createElement("span");
@@ -189,7 +193,7 @@ export default function DrawingDiv(props) {
       createDiv.innerHTML += "<span>Total Piece</span>"
       createDiv.appendChild(createInp)
       createDiv.classList.add("flex", "justify-center", "items-center")
-      createSpan.classList.add("text-center", "border-1", "border-solid", "h-full", "flex","w-48","justify-center", "items-center")
+      createSpan.classList.add("text-center", "border-solid","border-black","rounded-lg", "h-full", "flex","w-48","justify-center", "items-center")
       createInp.addEventListener("input", changeConnectedLinesTotalPiece)
       createInp.type = "number"
       createInp.classList.add("border-2", "border-solid", "h-6", "outline-0", "rounded-md", "text-center", "ml-1")
@@ -207,8 +211,6 @@ export default function DrawingDiv(props) {
       createSpan.style.flexDirection = "column"
       createSpan.setAttribute("id", room[currentRoomIndex].coordinates.connectedLines[i][0].id)
       createSpan.addEventListener("click", glowSelectedRoom)
-      const createText = document.createTextNode(room[currentRoomIndex].coordinates.connectedLines[i][0].id)
-      createSpan.appendChild(createText)
       createSpan.appendChild(createDiv)
       createSpan.appendChild(createDeleteButtonSpan)
       existingRoomDiv.appendChild(createSpan)
@@ -278,7 +280,8 @@ export default function DrawingDiv(props) {
         const text = document.createTextNode(sPath.len)
         createSpan.appendChild(text)
         lineDiv.appendChild(createSpan)
-        createSpan.style.fontSize = .8 + "vh"
+        createSpan.style.fontSize = 2 + "vh"
+        createSpan.style.color = "#c20606"
         createSpan.style.position = 'absolute'
         createSpan.style.top = Math.round((sPath.y.y1 + sPath.y.y2) / 2) + 'px'
         createSpan.style.left = Math.round((sPath.x.x1 + sPath.x.x2) / 2) + 'px'
@@ -466,18 +469,20 @@ export default function DrawingDiv(props) {
              className="text-black scroll-smooth scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
         <div className="w-2/12   flex flex-col items-center justify-evenly">
-          <button
-            className="active:border-b-gray-100 hover:bg-gray-400   rounded-md hover:border-white h-11 text-black  border-solid border border-black w-full border-black border-2 "
+              <Button id="undoBtt" onClick={undo} value="Undo"/>
+{/*           <button
+            className="hover:bg-gray-400  max-w-10.5  text-lg rounded-md h-11 text-black border-0   w-full "
             id="undoBtt" onClick={undo}>
             undo
-          </button>
-          <button
-            className="active:border-b-gray-100 hover:bg-gray-400 rounded-md hover:border-white text-black h-11  w-full border-2"
+          </button> */}
+              <Button onClick={clearAllFloor} value="Clear Floor"/>
+{/*           <button
+            className=" max-w-10.5 hover:bg-gray-400 text-lg rounded-md  text-black h-11  w-full border-0"
             onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor
-          </button>
+          </button> */}
         </div>
       </div>
-      <div style={{ position: "relative" }} className="overflow-hidden h-8.5/10" id="canvasDiv">
+      <div style={{ position: "relative",zIndex:10}} className=" shadow-allSide overflow-hidden h-8.5/10" id="canvasDiv">
         <div className="text-blue-400 " id="spanDiv">
 
         </div>

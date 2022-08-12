@@ -3,7 +3,7 @@ import '../App.css';
 import SelectMenu from "./SelectMenu";
 import ReactDom from "react-dom/client";
 import Button from "./Button"
-
+import ExistRoom from "./ExistRoom"
 let connectedLines = []
 let connectedLineCounter = 0;
 export default function DrawingDiv(props) {
@@ -17,7 +17,6 @@ export default function DrawingDiv(props) {
   const [globalDotDistance, setGlobalDotDistance] = useState(20)
   const [mousePoint, setMousePoint] = useState([0, 0])
   const [lineConnected, setLineConnected] = useState(false)
-  const [isLinesConnectedSomewhere, setIsLinesConnectedSomewhere] = useState(false)
   const lineDiv = document.getElementById("spanDiv")
   const [roomNumber, setRoomNumber] = useState(0)
   const lenPointDiv = document.getElementById("lenPointNum")
@@ -53,27 +52,47 @@ export default function DrawingDiv(props) {
   useEffect(() => {
     getRoomContent()
   }, [currentRoom])
-  const isTwoLineConnected = (x, y) => {
-    console.log(x, y)
-    for (let i = 0; i < connectedLines[connectedLineCounter].length - 1; i++) {
-      if (x === connectedLines[connectedLineCounter][i].x.x2 && y === connectedLines[connectedLineCounter][i].y.y2) {
-        return true
+  const isTwoLineConnected = (startXCoordinate, startYCoordinate,finishXCoordinate,finishYCoordinate) => {
+    const currentConnectedLineArr = connectedLines[connectedLineCounter]
+    let startConnected = false
+    let endConnected = false
+    for (let i in currentConnectedLineArr){
+      if(currentConnectedLineArr[i] === connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length-1]){
       }
+      else{
+        if((startXCoordinate === currentConnectedLineArr[i].x.x1 && startYCoordinate === currentConnectedLineArr[i].y.y1) || (startXCoordinate === currentConnectedLineArr[i].x.x2 && startYCoordinate === currentConnectedLineArr[i].y.y2)){
+          startConnected = true
+        }
+        if((finishXCoordinate === currentConnectedLineArr[i].x.x1 && finishYCoordinate === currentConnectedLineArr[i].y.y1) || (finishXCoordinate === currentConnectedLineArr[i].x.x2 && finishYCoordinate === currentConnectedLineArr[i].y.y2)){
+          endConnected = true
+        }
+      }
+    }
+    console.log(startConnected,endConnected)
+    if( startConnected && endConnected){
+      console.log("these two line connected")
+      return true
+    }
+    for (let i = 0; i < connectedLines[connectedLineCounter].length-1; i++) {
+/*       if ((((finishXCoordinate === connectedLines[connectedLineCounter][i].x.x2 || finishXCoordinate === connectedLines[connectedLineCounter][i].x.x1) && (finishYCoordinate === connectedLines[connectedLineCounter][i].y.y2 || finishYCoordinate === connectedLines[connectedLineCounter][i].y.y1))) && (isThereLineHere(startXCoordinate,startYCoordinate,finishXCoordinate,finishYCoordinate))) {
+        return true
+      } */
+  
     }
 
   }
   const isLineConnected = () => {
-    const endX = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
-    const endY = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y2;
-    console.log(isTwoLineConnected(endX, endY)
-    )
-    const startX = connectedLines[connectedLineCounter][0].x.x1;
-    const startY = connectedLines[connectedLineCounter][0].y.y1;
-    if (isTwoLineConnected(endX, endY) || (startX === endX && startY === endY)) {
+    const finishXCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
+    const finishYCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y2;
+    const startYCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y1;
+    const startXCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x1;
+    const startXCoordinateOfFirstLine =  connectedLines[connectedLineCounter][0].x.x1;
+    const startYCoordinateOfFirstLine = connectedLines[connectedLineCounter][0].y.y1;
+    if (isTwoLineConnected(startXCoordinateOfLastLine,startYCoordinateOfLastLine,finishXCoordinateOfLastLine,finishYCoordinateOfLastLine)) {
       setLineConnected(true)
       connectedLineCounter += 1
       connectedLines = [...connectedLines, []]
-      addWhatIsRoomNumber(startX, startY, connectedLineCounter)
+      addWhatIsRoomNumber(startXCoordinateOfFirstLine, startYCoordinateOfFirstLine, connectedLineCounter)
       const nameCounter = connectedLineNameCounter
       setConnectedLineNameCounter(nameCounter + 1)
     } else {
@@ -98,11 +117,12 @@ export default function DrawingDiv(props) {
   const glowSelectedRoom = (e) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
+    context.lineCap = "round";
+    context.lineWidth = 2;
     const targetId = e.target.id
-    if (connectedLines[connectedLines.length - 1].length < 1) {
-      for (let i = 0; i < connectedLines.length - 1; i++) {
+      for (let i = 0; i < connectedLineCounter; i++) {
         connectedLines[i].forEach((path) => {
-          if (path.id === targetId) {
+        if (path.id === targetId) {
             path.isLineRed ? context.strokeStyle = "black" : context.strokeStyle = "red"
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
@@ -113,24 +133,9 @@ export default function DrawingDiv(props) {
           }
         })
       }
-    } else {
-      for (let i = 0; i < connectedLines.length - 1; i++) {
-        connectedLines[i].forEach((path) => {
-          if (path.id === targetId) {
-            path.isLineRed ? context.strokeStyle = "black" : context.strokeStyle = "red"
-            context.beginPath();
-            context.moveTo(path.x.x1, path.y.y1);
-            context.lineTo(path.x.x2, path.y.y2);
-            context.stroke()
-            context.closePath();
-            path.isLineRed = !path.isLineRed
-          }
-        })
-      }
-    }
   }
   const deleteSelectedLines = (e) => {
-    const targetId = e.target.parentNode.parentNode.id;
+    const targetId = String(e.target.parentNode.id)
     for (let i = 0; i < connectedLines.length - 1; i++) {
       if (String(connectedLines[i][0].id) === targetId) {
         connectedLines.splice(i, 1)
@@ -145,7 +150,7 @@ export default function DrawingDiv(props) {
     const existingRooms = document.getElementById("existingRoomsAtFloor")
     let roomIndex = undefined;
     for (let i = 0; i < existingRooms.children.length; i++) {
-      if (existingRooms.children[i].id === e.target.parentNode.parentNode.id) {
+      if (existingRooms.children[i].children[0].id === e.target.parentNode.parentNode.id) {
         roomIndex = i;
       }
     }
@@ -153,6 +158,7 @@ export default function DrawingDiv(props) {
       path.totalPiece = parseInt(e.target.value)
       connectedLines = room[currentRoomIndex].coordinates.connectedLines
       room[currentRoomIndex].coordinates.connectedLines = connectedLines
+      getRoomContent()
     })
   }
   const writeLineLengths = (x1, y1, x2, y2) => {
@@ -178,42 +184,11 @@ export default function DrawingDiv(props) {
     const existingRoomDiv = document.getElementById("existingRoomsAtFloor")
     existingRoomDiv.innerHTML = ""
     for (let i = 0; i < room[currentRoomIndex].coordinates.connectedLineCounter; i++) {
-      const createSpan = document.createElement("span");
-      const createDiv = document.createElement("div")
-      const createTypeSpan = document.createElement("span")
-      const root = ReactDom.createRoot(createTypeSpan);
-      createTypeSpan.classList.add("w-full")
-      const createText = document.createTextNode(room[currentRoomIndex].coordinates.connectedLines[i][0].id)
-      createSpan.appendChild(createText)
-      createSpan.appendChild(createTypeSpan)
-      root.render(<SelectMenu defaultOption={{value: "multi-pieced", label: "Multi Piece"}} options = {[{value: "multi-pieced", label: "Multi Piece"},{value: "one-piece", label: "One Piece"}]}/>)
-      createDiv.style.width = `100%`
-      const createDeleteButtonSpan = document.createElement("span");
-      const createInp = document.createElement("input");
-      createDiv.innerHTML += "<span>Total Piece</span>"
-      createDiv.appendChild(createInp)
-      createDiv.classList.add("flex", "justify-center", "items-center")
-      createSpan.classList.add("text-center", "border-solid","border-black","rounded-lg", "h-full", "flex","w-48","justify-center", "items-center")
-      createInp.addEventListener("input", changeConnectedLinesTotalPiece)
-      createInp.type = "number"
-      createInp.classList.add("border-2", "border-solid", "h-6", "outline-0", "rounded-md", "text-center", "ml-1")
-      createInp.value = room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece;
-      createInp.min = 1;
-      createInp.style.width = `35%`
-      createDeleteButtonSpan.style.height = `1.6rem`
-      createDeleteButtonSpan.classList.add("deleteRoomButton")
-      createDeleteButtonSpan.style.width = `50%`
-      createDeleteButtonSpan.innerHTML = "<svg height='100%' color='black' xmlns=\"http://www.w3.org/2000/svg\" className=\"h-4 w-4\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" strokeWidth={2}>\n" +
-        "  <path strokeLinecap=\"round\" strokeLinejoin=\"round\" d=\"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16\" />\n" +
-        "</svg>"
-      createDeleteButtonSpan.addEventListener("click", deleteSelectedLines)
-      createSpan.classList.add("existingRoomsStyle")
-      createSpan.style.flexDirection = "column"
-      createSpan.setAttribute("id", room[currentRoomIndex].coordinates.connectedLines[i][0].id)
-      createSpan.addEventListener("click", glowSelectedRoom)
-      createSpan.appendChild(createDiv)
-      createSpan.appendChild(createDeleteButtonSpan)
-      existingRoomDiv.appendChild(createSpan)
+      const createNewSpan = document.createElement("span")
+      createNewSpan.style.height = `100%`
+      const root1 = ReactDom.createRoot(createNewSpan)
+      root1.render(<ExistRoom deleteSelectedLines={deleteSelectedLines} changeConnectedLinesTotalPiece={changeConnectedLinesTotalPiece}  glowSelectedRoom = {glowSelectedRoom}  id={room[currentRoomIndex].coordinates.connectedLines[i][0].id} pieceInputValue = {room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece}   />)
+      existingRoomDiv.appendChild(createNewSpan)
     }
   }
   const getRoomNumbers = () => {
@@ -424,7 +399,6 @@ export default function DrawingDiv(props) {
 
   }
   const undo = () => {
-    console.log("undo working")
     connectedLineCounter = room[currentRoomIndex].coordinates.connectedLineCounter
     if (lineConnected) {
       connectedLines.pop();

@@ -16,7 +16,6 @@
 */
 import React ,{useState} from 'react'
 function TextInput({inputName, onChange}) {
-    console.log(inputName)
     const [roomNameIsValid,setRoomNameIsValid] = useState("")
 
     const checkRoomNameIsValid = () => {

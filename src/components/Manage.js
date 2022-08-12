@@ -18,7 +18,6 @@ class Manage extends Component {
 
     const roomNameIsValid = e.length > 3;
     this.currentRoomName = e
-    console.log(e,roomNameIsValid)
 
     this.setState({
       ...this.state,
@@ -29,7 +28,6 @@ class Manage extends Component {
   showMenuSection = () => {
       const manage = document.getElementById("manageSection");
       const openMenuSection = document.getElementById("openMenuSection")
-    console.log("asd")
     openMenuSection.style.display = "none"
       manage.style.display="block"
     manage.style.zIndex = 50;
@@ -47,7 +45,6 @@ class Manage extends Component {
   changeSelectedRoom = () => {
     const selectedRoom = document.getElementById("roomSelect")
     const options = selectedRoom.options;
-    console.log(options[selectedRoom.selectedIndex].index)
     this.setState({
       ...this.state,
       selectedRoomIndex: options[selectedRoom.selectedIndex].index,
@@ -86,8 +83,8 @@ class Manage extends Component {
             <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
           </svg></div>
           <div className="w-full h-full flex flex-col text-black">
-            <div className="w-full h-full flex flex-col bg-gray-300 ">
-              <div className="w-full h-full h-2/6   flex flex-row  ">
+            <div className="w-full h-full flex flex-col bg-gray-100  ">
+              <div className="w-full h-2/6   flex flex-row  ">
                 <div className=" h-full w-full flex flex-col justify-between items-start ">
                   <div className="h-full w-full flex flex-col">
                     <TextInput inputName="Name"/>
@@ -106,10 +103,6 @@ class Manage extends Component {
                     </div>
                     <div className="w-full mt-1 flex justify-center items-center">
                       <Button onClick={this.addRoom} isActive={!this.state.roomNameIsValid} value="Add Floor "/>
-{/*                       <button
-                        className="border-1 rounded-md active:bg-gray-500  active:border-b-gray-100 hover:bg-gray-400 outline-0  text-black italic h-10 border-0 mt-2.5  w-full max-w-10.5  "
-                        disabled={!this.state.roomNameIsValid} onClick={this.addRoom}   type="submit">Submit
-                      </button> */}
                     </div>
                   </div>
                 </div>

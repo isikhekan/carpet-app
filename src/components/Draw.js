@@ -73,13 +73,6 @@ export default function DrawingDiv(props) {
       console.log("these two line connected")
       return true
     }
-    for (let i = 0; i < connectedLines[connectedLineCounter].length-1; i++) {
-/*       if ((((finishXCoordinate === connectedLines[connectedLineCounter][i].x.x2 || finishXCoordinate === connectedLines[connectedLineCounter][i].x.x1) && (finishYCoordinate === connectedLines[connectedLineCounter][i].y.y2 || finishYCoordinate === connectedLines[connectedLineCounter][i].y.y1))) && (isThereLineHere(startXCoordinate,startYCoordinate,finishXCoordinate,finishYCoordinate))) {
-        return true
-      } */
-  
-    }
-
   }
   const isLineConnected = () => {
     const finishXCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
@@ -444,16 +437,7 @@ export default function DrawingDiv(props) {
         </div>
         <div className="w-2/12   flex flex-col items-center justify-evenly">
               <Button id="undoBtt" onClick={undo} value="Undo"/>
-{/*           <button
-            className="hover:bg-gray-400  max-w-10.5  text-lg rounded-md h-11 text-black border-0   w-full "
-            id="undoBtt" onClick={undo}>
-            undo
-          </button> */}
               <Button onClick={clearAllFloor} value="Clear Floor"/>
-{/*           <button
-            className=" max-w-10.5 hover:bg-gray-400 text-lg rounded-md  text-black h-11  w-full border-0"
-            onClick={clearAllFloor} id="clearAllFloorButton">Clear Floor
-          </button> */}
         </div>
       </div>
       <div style={{ position: "relative",zIndex:10}} className=" shadow-allSide overflow-hidden h-8.5/10" id="canvasDiv">

@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useState } from "react"
 import '../App.css';
-import SelectMenu from "./SelectMenu";
 import ReactDom from "react-dom/client";
 import Button from "./Button"
 import ExistRoom from "./ExistRoom"
 let connectedLines = []
 let connectedLineCounter = 0;
 export default function DrawingDiv(props) {
-  const { room, currentRoom, currentRoomIndex } = props
+  const { room, currentRoom, currentRoomIndex, updateStateOnChange } = props
   const [lastMoveCoordinates, setLastMoveCoordinates] = useState({})
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
@@ -31,8 +30,8 @@ export default function DrawingDiv(props) {
   }
   useEffect(() => {
     const canvas = canvasRef.current;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.screen.width
+    canvas.height = window.screen.height
     const context = canvas.getContext("2d");
     context.lineCap = "round";
     context.lineWidth = 2;
@@ -42,28 +41,70 @@ export default function DrawingDiv(props) {
         context.moveTo(i, j)
         context.arc(i, j, 1, 0, Math.PI * 2);
       }
-    }
+    } 
     context.strokeStyle = "black";
     context.stroke();
   }, [])
   useEffect(() => {
     getRoomContent()
-  }, [connectedLineCounter])
+  }, [currentRoom]) 
   useEffect(() => {
     getRoomContent()
-  }, [currentRoom])
-  const isTwoLineConnected = (startXCoordinate, startYCoordinate,finishXCoordinate,finishYCoordinate) => {
+  }, [connectedLineCounter])
+
+  const isAllLinesConnected = () => {
+    let connectedALlLinesIsTrue = [];
+    let currentConnectedLineArr = connectedLines[connectedLineCounter]
+    for(let i in currentConnectedLineArr){
+      let startConnected = false
+      let endConnected = false
+      const finishCoordinateOfX = currentConnectedLineArr[i].x.x2;
+      const finishCoordinateOfY = currentConnectedLineArr[i].y.y2;
+      const startCoordinateOfY = currentConnectedLineArr[i].y.y1;
+      const startCoordinateOfX = currentConnectedLineArr[i].x.x1;
+      console.log("started here",startCoordinateOfX,startCoordinateOfY,finishCoordinateOfX,finishCoordinateOfY)
+      for(let j in currentConnectedLineArr){
+          if(currentConnectedLineArr[i] !== currentConnectedLineArr[j]){
+            console.log(currentConnectedLineArr[j].x.x1,currentConnectedLineArr[j].x.x2,currentConnectedLineArr[j].y.y1,currentConnectedLineArr[j].y.y2)
+            if((startCoordinateOfX === currentConnectedLineArr[j].x.x1 && startCoordinateOfY === currentConnectedLineArr[j].y.y1) || (startCoordinateOfX === currentConnectedLineArr[j].x.x2 && startCoordinateOfY === currentConnectedLineArr[j].y.y2)){
+              startConnected = true
+            }
+            if((finishCoordinateOfX === currentConnectedLineArr[j].x.x1 && finishCoordinateOfY === currentConnectedLineArr[j].y.y1) || (finishCoordinateOfX === currentConnectedLineArr[j].x.x2 && finishCoordinateOfY === currentConnectedLineArr[j].y.y2)){
+              endConnected = true
+            }
+            console.log("start",startConnected,"end",endConnected)
+            if(startConnected && endConnected){
+              currentConnectedLineArr[i].isLineStartAndEndPointConnected=true
+          }
+        }
+      }
+      
+    }
+    for(let i in connectedLines[connectedLineCounter]){
+        connectedALlLinesIsTrue.push(connectedLines[connectedLineCounter][i].isLineStartAndEndPointConnected)
+    }
+    let connectedAllLinesTrue = connectedALlLinesIsTrue.every((isTrue)=>{
+      return isTrue === true
+    })
+    if(connectedAllLinesTrue){
+      return true
+    }
+  }
+  
+  const isLastLineConnected = () => {
+    const finishXCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
+    const finishYCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y2;
+    const startYCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y1;
+    const startXCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x1;
     const currentConnectedLineArr = connectedLines[connectedLineCounter]
     let startConnected = false
     let endConnected = false
     for (let i in currentConnectedLineArr){
-      if(currentConnectedLineArr[i] === connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length-1]){
-      }
-      else{
-        if((startXCoordinate === currentConnectedLineArr[i].x.x1 && startYCoordinate === currentConnectedLineArr[i].y.y1) || (startXCoordinate === currentConnectedLineArr[i].x.x2 && startYCoordinate === currentConnectedLineArr[i].y.y2)){
+      if(currentConnectedLineArr[i] !== connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length-1]){
+        if((startXCoordinateOfLastLine === currentConnectedLineArr[i].x.x1 && startYCoordinateOfLastLine === currentConnectedLineArr[i].y.y1) || (startXCoordinateOfLastLine === currentConnectedLineArr[i].x.x2 && startYCoordinateOfLastLine === currentConnectedLineArr[i].y.y2)){
           startConnected = true
         }
-        if((finishXCoordinate === currentConnectedLineArr[i].x.x1 && finishYCoordinate === currentConnectedLineArr[i].y.y1) || (finishXCoordinate === currentConnectedLineArr[i].x.x2 && finishYCoordinate === currentConnectedLineArr[i].y.y2)){
+        if((finishXCoordinateOfLastLine === currentConnectedLineArr[i].x.x1 && finishYCoordinateOfLastLine === currentConnectedLineArr[i].y.y1) || (finishXCoordinateOfLastLine === currentConnectedLineArr[i].x.x2 && finishYCoordinateOfLastLine === currentConnectedLineArr[i].y.y2)){
           endConnected = true
         }
       }
@@ -71,15 +112,20 @@ export default function DrawingDiv(props) {
     if( startConnected && endConnected){
       return true
     }
+    for (let i = 0; i < connectedLines[connectedLineCounter].length-1; i++) {
+/*       if ((((finishXCoordinate === connectedLines[connectedLineCounter][i].x.x2 || finishXCoordinate === connectedLines[connectedLineCounter][i].x.x1) && (finishYCoordinate === connectedLines[connectedLineCounter][i].y.y2 || finishYCoordinate === connectedLines[connectedLineCounter][i].y.y1))) && (isThereLineHere(startXCoordinate,startYCoordinate,finishXCoordinate,finishYCoordinate))) {
+        return true
+      } */
+  
+    }
+
   }
   const isLineConnected = () => {
-    const finishXCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x2;
-    const finishYCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y2;
-    const startYCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].y.y1;
-    const startXCoordinateOfLastLine = connectedLines[connectedLineCounter][connectedLines[connectedLineCounter].length - 1].x.x1;
+    updateStateOnChange()
     const startXCoordinateOfFirstLine =  connectedLines[connectedLineCounter][0].x.x1;
     const startYCoordinateOfFirstLine = connectedLines[connectedLineCounter][0].y.y1;
-    if (isTwoLineConnected(startXCoordinateOfLastLine,startYCoordinateOfLastLine,finishXCoordinateOfLastLine,finishYCoordinateOfLastLine)) {
+    if (isLastLineConnected() && isAllLinesConnected()) {
+      console.log("All lines connected")
       setLineConnected(true)
       connectedLineCounter += 1
       connectedLines = [...connectedLines, []]
@@ -91,7 +137,7 @@ export default function DrawingDiv(props) {
     }
     room[currentRoomIndex].coordinates.connectedLines = connectedLines
     room[currentRoomIndex].coordinates.connectedLineCounter = connectedLineCounter
-    lineConnected ? getExistingRooms() : console.log("not yet")
+    lineConnected ? getExistingRooms() : console.log("lines doesn't connected")
   }
   const addWhatIsRoomNumber = (startX, startY, roomNum = 1) => {
     const whereToAdd = document.getElementById("spanDiv");
@@ -99,6 +145,7 @@ export default function DrawingDiv(props) {
     createRoomNumberSpan.innerText = roomNum;
     whereToAdd.appendChild(createRoomNumberSpan)
     createRoomNumberSpan.style.color = "#3c34d1"
+    createRoomNumberSpan.style.fontWeight = "bold"
     createRoomNumberSpan.style.position = "absolute";
     createRoomNumberSpan.style.top = startY + "px";
     createRoomNumberSpan.style.left = startX + "px";
@@ -152,15 +199,17 @@ export default function DrawingDiv(props) {
       getRoomContent()
     })
   }
-  const writeLineLengths = (x1, y1, x2, y2) => {
+  const writeLineLengths = (x1, y1, x2, y2) => {  
     const createSpan = document.createElement("span")
     const text = document.createTextNode(lengthPoint.toString())
     createSpan.appendChild(text)
     lineDiv.appendChild(createSpan)
     createSpan.style.position = 'absolute'
     createSpan.style.color = "#c20606"
-    createSpan.style.top = Math.round((y1 + y2) / 2) + 'px'
-    createSpan.style.left = Math.round((x2 + x1) / 2) + 'px'
+    createSpan.style.fontSize = `2vh`
+    createSpan.style.fontWeight = "bold"
+    createSpan.style.top = Math.round((y1 + y2) / 2.05) + 'px'
+    createSpan.style.left = Math.round((x2 + x1) / 2.02) + 'px'
     createSpan.style.userSelect = "none"
   }
   const roundNearest = (num) => {
@@ -186,6 +235,7 @@ export default function DrawingDiv(props) {
     }
   }
   const clearAllFloor = () => {
+    updateStateOnChange()
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     contextRef.current.clearRect(0, 0, canvas.width, canvas.height)
@@ -206,6 +256,7 @@ export default function DrawingDiv(props) {
     getExistingRooms()
   }
   const getRoomContent = () => {
+    updateStateOnChange()
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.strokeStyle = "black"
@@ -247,6 +298,7 @@ export default function DrawingDiv(props) {
         createSpan.style.fontSize = 2 + "vh"
         createSpan.style.color = "#c20606"
         createSpan.style.position = 'absolute'
+        createSpan.style.fontWeight="bold"
         createSpan.style.top = Math.round((sPath.y.y1 + sPath.y.y2) / 2) + 'px'
         createSpan.style.left = Math.round((sPath.x.x1 + sPath.x.x2) / 2) + 'px'
         createSpan.style.userSelect = "none"
@@ -302,21 +354,23 @@ export default function DrawingDiv(props) {
           connectedLines.push([{
             x: { x1: point.x, x2: x },
             y: { y1: point.y, y2: y },
-            id: "a" + 1,
+            id: "D" + 1,
             len: lengthPoint,
             totalPiece: 1,
             isLineRed: false,
-            type: "simple"
+            type: "simple",
+            isLineStartAndEndPointConnected:false,
           }])
         } else {
           connectedLines[connectedLineCounter].push({
             x: { x1: point.x, x2: x },
             y: { y1: point.y, y2: y },
-            id: "a" + connectedLineNameCounter,
+            id: "D" + connectedLineNameCounter,
             len: lengthPoint,
             totalPiece: 1,
             isLineRed: false,
-            type: "simple"
+            type: "simple",
+            isLineStartAndEndPointConnected:false,
           })
         }
       }
@@ -338,21 +392,23 @@ export default function DrawingDiv(props) {
           connectedLines.push([{
             x: { x1: point.x, x2: x },
             y: { y1: point.y, y2: y },
-            id: "a" + 1,
+            id: "D" + 1,
             len: lengthPoint,
             totalPiece: 1,
             isLineRed: false,
-            type: "simple"
-          }])
+            type: "simple",
+            isLineStartAndEndPointConnected:false,
+        }])
         } else {
           connectedLines[connectedLineCounter].push({
             x: { x1: point.x, x2: x },
             y: { y1: point.y, y2: y },
-            id: "a" + connectedLineNameCounter,
+            id: "D" + connectedLineNameCounter,
             len: lengthPoint,
             totalPiece: 1,
             isLineRed: false,
-            type: "simple"
+            type: "simple",
+            isLineStartAndEndPointConnected:false,
           })
         }
       }
@@ -421,13 +477,16 @@ export default function DrawingDiv(props) {
     }
     getRoomContent()
     room[currentRoomIndex].coordinates.connectedLineCounter = connectedLineCounter
+    for(let i in connectedLines[connectedLineCounter]){
+      connectedLines[connectedLineCounter][i].isLineStartAndEndPointConnected = false
+    }
+    isAllLinesConnected()
   }
 
   return (
     <div id="main" className=" w-full h-full max-h-screen  flex flex-col">
-
       <h1 style={myStyle} id="lenPointNum" className="z-40">{lengthPoint}</h1>
-      <div className="flex flex-row w-full h-1.5/10">
+      <div className="flex flex-row w-full h-1.5/10 md:h-2/10">
         <div id="existingRoomsAtFloor"
              className="text-black scroll-smooth scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
@@ -436,7 +495,7 @@ export default function DrawingDiv(props) {
               <Button onClick={clearAllFloor} value="Clear Floor"/>
         </div>
       </div>
-      <div style={{ position: "relative",zIndex:10}} className=" shadow-allSide overflow-hidden h-8.5/10" id="canvasDiv">
+      <div style={{ position: "relative",zIndex:10}} className=" shadow-allSide overflow-hidden h-8.5/10 md:h-8/10" id="canvasDiv">
         <div className="text-blue-400 " id="spanDiv">
 
         </div>

@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { Transition } from '@headlessui/react'
 import Draw from './Draw'
 import TextInput from './Input'
 import TextArea from './TextArea'
@@ -14,10 +15,12 @@ class Manage extends Component {
   checkRoomNameIsValid = (e) => {
     const roomNameIsValid = e.length > 3;
     this.currentRoomName = e
+
     this.setState({
       ...this.state,
       roomNameIsValid,
     })
+
   }
   showMenuSection = () => {
       const manage = document.getElementById("manageSection");
@@ -27,6 +30,7 @@ class Manage extends Component {
     manage.style.zIndex = 50;
     openMenuSection.style.zIndex = 0;
   }
+  
   closeMenuSection = ()=>{
     const openMenuSection = document.getElementById("openMenuSection")
     const manage = document.getElementById("manageSection");
@@ -45,7 +49,11 @@ class Manage extends Component {
       selectedRoom: options[selectedRoom.selectedIndex].text,
     })
   }
-
+  updateStatement = ()=>{
+    this.setState({
+      ...this.state
+    })
+  }
   addRoom = () => {
     const id = this.currentRoomName
     const roomInput = document.createTextNode(id)
@@ -66,12 +74,13 @@ class Manage extends Component {
 
   render() {
     return (
-      <div className="text-xs sm:text-lg w-screen h-screen flex flex-row relative touch-none" >
-        <div id="openMenuSection" onClick={this.showMenuSection} className="absolute z-50 md:z-0 top-0 left-0   shadow-2xl">
+      <div  className=" text-xs sm:text-lg w-screen h-screen flex flex-row relative touch-none select-none" >
+        <div id="openMenuSection" onClick={this.showMenuSection} className="border-t-2 border-l-2 border-blue-900 absolute z-50 md:z-0 top-0 left-0 shadow-2xl">
           <svg  color="black" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </div>
+
         <div id="manageSection" className="hidden  shadow-2xl md:block z-10 left-0 w-4/5 md:w-1/5 top-0 max-w-18.75 absolute h-full ">
           <div onClick={this.closeMenuSection} className=" top-0 right-[-2.75rem] text-black absolute"><svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
@@ -116,13 +125,13 @@ class Manage extends Component {
           <div className="draw max-h-screen h-full">
             <div className="w-full max-h-screen h-full">
               {this.state.rooms.length ? (
-                <Draw
+                <Draw updateStateOnChange={this.updateStatement}
                   room={this.state.rooms}
                   currentRoom={this.state.selectedRoom}
                   currentRoomIndex={this.state.selectedRoomIndex}
                 />
               ) : (
-                <h2 className="italic text-center ">enter floor first</h2>
+                <h2 className="italic text-center flex items-center justify-center h-full select-none  "><span>You must enter floor before draw</span></h2>
               )}
             </div>
           </div>

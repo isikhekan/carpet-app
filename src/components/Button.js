@@ -17,7 +17,7 @@
 import React from 'react'
 function Button(props) {
     return (
-        <button onClick={props.onClick} disabled={props.isActive} className="bg-gray-50 hover:bg-gray-400 text-gray-800 italic w-full max-w-10.5 py-2 px-4 rounded-lg text-center text-lg">
+        <button onClick={props.onClick} disabled={props.isActive} className="bg-gray-50 hover:bg-gray-400 text-gray-800 italic w-full max-w-10.5  text-sm md:text-lg h-full md:h-12 py-2 px-4 rounded-lg text-center ">
         {props.value}
         </button>
     )

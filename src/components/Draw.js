@@ -68,9 +68,7 @@ export default function DrawingDiv(props) {
         }
       }
     }
-    console.log(startConnected,endConnected)
     if( startConnected && endConnected){
-      console.log("these two line connected")
       return true
     }
   }
@@ -160,8 +158,6 @@ export default function DrawingDiv(props) {
     createSpan.appendChild(text)
     lineDiv.appendChild(createSpan)
     createSpan.style.position = 'absolute'
-    createSpan.style.fontSize = `2vh`
-    createSpan.style.borderRadius = 10
     createSpan.style.color = "#c20606"
     createSpan.style.top = Math.round((y1 + y2) / 2) + 'px'
     createSpan.style.left = Math.round((x2 + x1) / 2) + 'px'

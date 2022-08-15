@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import Draw from './Draw'
 import TextInput from './Input'
-import SelectMenu from './SelectMenu'
 import TextArea from './TextArea'
 import Button from './Button'
-
 class Manage extends Component {
   state = {
     rooms: [],
@@ -13,17 +11,13 @@ class Manage extends Component {
     selectedRoomIndex: 0,
     roomNameIsValid: false,
   }
-
   checkRoomNameIsValid = (e) => {
-
     const roomNameIsValid = e.length > 3;
     this.currentRoomName = e
-
     this.setState({
       ...this.state,
       roomNameIsValid,
     })
-
   }
   showMenuSection = () => {
       const manage = document.getElementById("manageSection");
@@ -118,7 +112,6 @@ class Manage extends Component {
             </div>
           </div>
         </div>
-        
           <div className="w-full z-0">
           <div className="draw max-h-screen h-full">
             <div className="w-full max-h-screen h-full">

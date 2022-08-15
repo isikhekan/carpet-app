@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import '../App.css';
+import SelectMenu from "./SelectMenu";
 import ReactDom from "react-dom/client";
 import Button from "./Button"
 import ExistRoom from "./ExistRoom"
@@ -396,7 +397,7 @@ export default function DrawingDiv(props) {
             len: lengthPoint,
             totalPiece: 1,
             isLineRed: false,
-            type: "simple",
+            type: "multi-pieced",
             isLineStartAndEndPointConnected:false,
         }])
         } else {
@@ -407,7 +408,7 @@ export default function DrawingDiv(props) {
             len: lengthPoint,
             totalPiece: 1,
             isLineRed: false,
-            type: "simple",
+            type: "multi-pieced",
             isLineStartAndEndPointConnected:false,
           })
         }

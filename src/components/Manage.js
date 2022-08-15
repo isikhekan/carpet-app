@@ -75,16 +75,18 @@ class Manage extends Component {
   render() {
     return (
       <div  className=" text-xs sm:text-lg w-screen h-screen flex flex-row relative touch-none select-none" >
-        <div id="openMenuSection" onClick={this.showMenuSection} className="border-t-2 border-l-2 border-blue-900 absolute z-50 md:z-0 top-0 left-0 shadow-2xl">
-          <svg  color="black" xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        <div id="openMenuSection" onClick={this.showMenuSection} className=" border-solid border-l-0 border-r-0 rounded-2xl absolute z-50 md:z-0 top-0 left-0 shadow-2xl flex items-center justify-center h-10 w-10 ">
+          <svg color='black' xmlns="http://www.w3.org/2000/svg" className="h-full w-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
           </svg>
         </div>
 
         <div id="manageSection" className="hidden  shadow-2xl md:block z-10 left-0 w-4/5 md:w-1/5 top-0 max-w-18.75 absolute h-full ">
-          <div onClick={this.closeMenuSection} className=" top-0 right-[-2.75rem] text-black absolute"><svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-          </svg></div>
+          <div onClick={this.closeMenuSection} className="border-solid border-l-0 border-r-0 rounded-2xl top-0 right-[-2.75rem] w-10 h-10 text-black absolute flex justify-center items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-full w-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </div>
           <div className="w-full h-full flex flex-col text-black">
             <div className="w-full h-full flex flex-col bg-gray-100  ">
               <div className="w-full h-2/6   flex flex-row  ">

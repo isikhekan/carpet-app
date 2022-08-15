@@ -30,7 +30,7 @@ function TextInput({inputName, onChange}) {
           {inputName}
         </label>
         <div className="mt-1 relative rounded-md shadow-sm">
-          <input autoComplete='on' onChange={checkRoomNameIsValid}
+          <input autoComplete='off' onChange={checkRoomNameIsValid}
             type="text"
             name={inputName}
             id={inputName}

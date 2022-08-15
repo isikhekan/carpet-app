@@ -9,7 +9,7 @@ function ExistRoom(props){
     return(
         
         <span  id={props.id} onClick={props.glowSelectedRoom} className="select-none text-center flex flex-col border-solid border-black rounded-lg h-full w-48 justify-center items-center">
-            <div className=""><span className="w-full">{props.id}</span></div>
+            <div className=""><span className="w-full select-none">{props.id}</span></div>
             <SelectMenu defaultOption={{value: "multi-pieced", label: "Multi Piece"}} options = {[{value: "multi-pieced", label: "Multi Piece"},{value: "one-piece", label: "One Piece"}]} />
             <div className="w-full">
                 <span>Total Piece : </span>

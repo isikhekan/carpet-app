@@ -2,20 +2,29 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  user-select: none;
 }
 .App {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+* label  {
+  transition: 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19)!important;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#manageSection {
+  transition: 1s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+}
+.openMenuSection {
+  transition: 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  display: block;
+  z-index: 50;
+}
+.input-field:focus-within label {
+  top:-.5rem;
+  opacity: 1;
+}
+.text-area-field:focus-within label {
+  top:-.5rem;
+  opacity: 1;
 }
 .App-header {
   background-color: #282c34;
@@ -38,4 +47,5 @@
     transform: rotate(360deg);
   }
 }
+
 

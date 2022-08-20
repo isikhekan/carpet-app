@@ -1,3 +1,4 @@
+import "../App.css"
 /*
   This example requires Tailwind CSS v2.0+ 
   
@@ -17,18 +18,18 @@
 import React from 'react'
 function TextArea({areaName}) {
     return (
-      <div>
-        <label htmlFor={areaName} className="block text-sm font-medium text-gray-700">
+      <div className='flex text-area-field flex-row relative'>
+        <label htmlFor={areaName} className="border-0 text-center bg-white block rounded-md text-sm  absolute z-10 left-0 top-1 opacity-25">
           {areaName}
         </label>
-        <div className="mt-1 relative rounded-md shadow-sm">
+        <div className="mt-1  relative ">
           <textarea
             style={{resize:"none"}}
             type="text"
             name={areaName}
             id={areaName}
-            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full h-40 pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-            placeholder="Type here..."
+            className=" bg-white  italic  block w-full h-24 max-w-10.5 pl-2 pr-12 sm:text-sm rounded-md border-0 outline-none"
+            placeholder=""
           />
         </div>
       </div>

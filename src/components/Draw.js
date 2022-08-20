@@ -150,15 +150,28 @@ export default function DrawingDiv(props) {
     createRoomNumberSpan.userSelect = "none";
   }
 
-  const glowSelectedRoom = (e) => {
+  const changeTypeOfCarpet = (type)=>{
+    connectedLines[connectedLineCounter-1].forEach((path)=>{
+        console.log(path)
+        path.type = type
+    })
+    updateStateOnChange()
+  }  
+
+  const glowSelectedRoom = (id) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.lineCap = "round";
     context.lineWidth = 2;
-    const targetId = e.target.id
-      for (let i = 0; i < connectedLineCounter; i++) {
+    const targetId = id
+    console.log(id)
+    updateStateOnChange()
+    console.log(connectedLines)
+    for (let i = 0; i < connectedLineCounter; i++) {
+      console.log(connectedLines[i])
         connectedLines[i].forEach((path) => {
         if (path.id === targetId) {
+            console.log(path)
             path.isLineRed ? context.strokeStyle = "black" : context.strokeStyle = "red"
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
@@ -171,7 +184,7 @@ export default function DrawingDiv(props) {
       }
   }
   const deleteSelectedLines = (e) => {
-    const targetId = String(e.target.parentNode.id)
+    const targetId = String(e.target.parentNode.parentNode.parentNode.id)
     for (let i = 0; i < connectedLines.length - 1; i++) {
       if (String(connectedLines[i][0].id) === targetId) {
         connectedLines.splice(i, 1)
@@ -202,10 +215,7 @@ export default function DrawingDiv(props) {
     const text = document.createTextNode(lengthPoint.toString())
     createSpan.appendChild(text)
     lineDiv.appendChild(createSpan)
-    createSpan.style.position = 'absolute'
-    createSpan.style.color = "#c20606"
-    createSpan.style.fontSize = `2vh`
-    createSpan.style.fontWeight = "bold"
+    createSpan.classList.add("absolute","select-none","bg-black","text-white","rounded-xl","font-bold","text-sm")
     createSpan.style.top = Math.round((y1 + y2) / 2.05) + 'px'
     createSpan.style.left = Math.round((x2 + x1) / 2.02) + 'px'
   }
@@ -222,7 +232,7 @@ export default function DrawingDiv(props) {
       const createNewSpan = document.createElement("span")
       createNewSpan.style.height = `100%`
       const root1 = ReactDom.createRoot(createNewSpan)
-      root1.render(<ExistRoom deleteSelectedLines={deleteSelectedLines} changeConnectedLinesTotalPiece={changeConnectedLinesTotalPiece}  glowSelectedRoom = {glowSelectedRoom}  id={room[currentRoomIndex].coordinates.connectedLines[i][0].id} pieceInputValue = {room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece}   />)
+      root1.render(<ExistRoom roomCarpetType="" deleteSelectedLines={deleteSelectedLines} changeTypeOfSelect={changeTypeOfCarpet} changeConnectedLinesTotalPiece={changeConnectedLinesTotalPiece}  glowSelectedRoom = {glowSelectedRoom}  id={room[currentRoomIndex].coordinates.connectedLines[i][0].id} pieceInputValue = {room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece}   />)
       existingRoomDiv.appendChild(createNewSpan)
     }
   }
@@ -232,6 +242,7 @@ export default function DrawingDiv(props) {
     }
   }
   const clearAllFloor = () => {
+    setConnectedLineNameCounter(1);
     updateStateOnChange()
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -292,13 +303,9 @@ export default function DrawingDiv(props) {
         const text = document.createTextNode(sPath.len)
         createSpan.appendChild(text)
         lineDiv.appendChild(createSpan)
-        createSpan.style.fontSize = 2 + "vh"
-        createSpan.style.color = "#c20606"
-        createSpan.style.position = 'absolute'
-        createSpan.style.fontWeight="bold"
-        createSpan.style.top = Math.round((sPath.y.y1 + sPath.y.y2) / 2) + 'px'
-        createSpan.style.left = Math.round((sPath.x.x1 + sPath.x.x2) / 2) + 'px'
-        createSpan.style.userSelect = "none"
+        createSpan.classList.add("absolute","select-none","bg-black","text-white","rounded-xl","text-sm","font-bold")
+        createSpan.style.top = Math.round((sPath.y.y1 + sPath.y.y2) / 2.05) + 'px'
+        createSpan.style.left = Math.round((sPath.x.x1 + sPath.x.x2) / 2.02) + 'px'
       })
     })
     if (connectedLines.length > 1) {
@@ -445,6 +452,7 @@ export default function DrawingDiv(props) {
     if (lineConnected) {
       connectedLines.pop();
       connectedLineCounter -= 1;
+      setConnectedLineNameCounter(connectedLineNameCounter-1);
       if (connectedLineCounter === -1) {
         connectedLineCounter = 0;
       } else {
@@ -483,21 +491,21 @@ export default function DrawingDiv(props) {
   return (
     <div id="main" className=" w-full h-full max-h-screen  flex flex-col">
       <h1 style={myStyle} id="lenPointNum" className="z-40">{lengthPoint}</h1>
-      <div className="flex flex-row w-full h-1.5/10 md:h-2/10">
+      <div className="flex flex-row w-full bg-sky-100  shadow-md h-2/10 md:h-2/10">
         <div id="existingRoomsAtFloor"
-             className="text-black scroll-smooth scrollbar-hide existingRoomsAtFloor existingRoomsStyle w-10/12 flex flex-row flex-wrap overflow-auto items-center justify-center">
+             className="text-black  rounded-xl scroll-smooth scrollbar-hide existingRoomsAtFloor  existingRoomsStyle w-10/12 flex flex-col md:flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
-        <div className="w-2/12   flex flex-col items-center justify-evenly">
+        <div className="w-2/12 shadow-2xl rounded-xl flex flex-col items-center justify-evenly">
               <Button id="undoBtt" onClick={undo} value="Undo"/>
               <Button onClick={clearAllFloor} value="Clear Floor"/>
         </div>
       </div>
-      <div style={{ position: "relative",zIndex:10}} className=" shadow-allSide overflow-hidden h-8.5/10 md:h-8/10" id="canvasDiv">
-        <div className="text-blue-400 " id="spanDiv">
+      <div style={{ position: "relative",zIndex:10}} className="bg-sky-50 overflow-hidden h-8/10 md:h-8/10" id="canvasDiv">
+        <div className=" " id="spanDiv">
 
         </div>
         <div className="w-full h-full">
-          <canvas className=" " id="myCanvas"
+          <canvas className="rounded-md" id="myCanvas"
                   onMouseDown={startDrawing}
                   onMouseUp={finishDrawing}
                   onMouseMove={draw}

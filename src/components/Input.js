@@ -1,4 +1,7 @@
+
+import '../App.css';
 /*
+
   This example requires Tailwind CSS v2.0+ 
   
   This example requires some changes to your config:
@@ -15,30 +18,31 @@
   ```
 */
 import React ,{useState} from 'react'
-function TextInput({inputName, onChange}) {
+function Input({inputName, onChange= ()=>{}, type="text",onClick =()=>{}, id,position=true} ) {
     const [roomNameIsValid,setRoomNameIsValid] = useState("")
 
     const checkRoomNameIsValid = () => {
-        const inputRoomName = document.getElementById(inputName)
+        const inputRoomName = document.getElementById(id)
         const roomNameIsValid = inputRoomName.value
-        setRoomNameIsValid(roomNameIsValid)
+        setRoomNameIsValid(roomNameIsValid) 
         onChange(roomNameIsValid)
     }
+    const isCheckboxChecked = ()=>{
+      onClick(id)
+    }
     return (
-      <div>
-        <label htmlFor={inputName} className="block text-sm font-medium text-gray-700">
-          {inputName}
-        </label>
-        <div className="mt-1 relative rounded-md shadow-sm">
-          <input autoComplete='off' onChange={checkRoomNameIsValid}
-            type="text"
-            name={inputName}
-            id={inputName}
-            className="focus:ring-indigo-500 focus:border-indigo-500 block w-full h-10 pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-            placeholder="Type here..."
+      <div className='input-field flex flex-row  h-full text-center items-center justify-center relative'>
+        {position ? <label htmlFor={inputName} className="block  text-sm bg-white  absolute z-10 top-0 opacity-25   left-0  rounded-md   ">{inputName}</label> : <label htmlFor={inputName} className="mt-1  mr-3 block text-sm rounded-md">{inputName}</label>}
+        <div className="mt-1 relative rounded-md ">
+          <input autoComplete='off' onClick={isCheckboxChecked} onChange={checkRoomNameIsValid} 
+            type={type}
+            name = {id}
+            id={id}
+            className="outline-none italic max-w-10.5 block h-10 pl-2  sm:text-sm rounded-md border-0"
+            placeholder=""
           />
         </div>
       </div>
     )
   }
-  export default TextInput
+  export default Input

@@ -2,10 +2,7 @@ import React from "react";
 import SelectMenu from "./SelectMenu";
 
 
-
 function ExistRoom(props){
-
-
     return(
         
         <span  id={props.id} onClick={props.glowSelectedRoom} className="select-none text-center flex flex-col border-solid border-black rounded-lg h-full w-48 justify-center items-center">

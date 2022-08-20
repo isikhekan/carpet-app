@@ -63,17 +63,14 @@ export default function DrawingDiv(props) {
       const finishCoordinateOfY = currentConnectedLineArr[i].y.y2;
       const startCoordinateOfY = currentConnectedLineArr[i].y.y1;
       const startCoordinateOfX = currentConnectedLineArr[i].x.x1;
-      console.log("started here",startCoordinateOfX,startCoordinateOfY,finishCoordinateOfX,finishCoordinateOfY)
       for(let j in currentConnectedLineArr){
           if(currentConnectedLineArr[i] !== currentConnectedLineArr[j]){
-            console.log(currentConnectedLineArr[j].x.x1,currentConnectedLineArr[j].x.x2,currentConnectedLineArr[j].y.y1,currentConnectedLineArr[j].y.y2)
             if((startCoordinateOfX === currentConnectedLineArr[j].x.x1 && startCoordinateOfY === currentConnectedLineArr[j].y.y1) || (startCoordinateOfX === currentConnectedLineArr[j].x.x2 && startCoordinateOfY === currentConnectedLineArr[j].y.y2)){
               startConnected = true
             }
             if((finishCoordinateOfX === currentConnectedLineArr[j].x.x1 && finishCoordinateOfY === currentConnectedLineArr[j].y.y1) || (finishCoordinateOfX === currentConnectedLineArr[j].x.x2 && finishCoordinateOfY === currentConnectedLineArr[j].y.y2)){
               endConnected = true
             }
-            console.log("start",startConnected,"end",endConnected)
             if(startConnected && endConnected){
               currentConnectedLineArr[i].isLineStartAndEndPointConnected=true
           }
@@ -211,7 +208,6 @@ export default function DrawingDiv(props) {
     createSpan.style.fontWeight = "bold"
     createSpan.style.top = Math.round((y1 + y2) / 2.05) + 'px'
     createSpan.style.left = Math.round((x2 + x1) / 2.02) + 'px'
-    createSpan.style.userSelect = "none"
   }
   const roundNearest = (num) => {
     return Math.round(num / globalDotDistance) * globalDotDistance

@@ -158,21 +158,26 @@ export default function DrawingDiv(props) {
     updateStateOnChange()
   }  
 
-  const glowSelectedRoom = (id) => {
+  const glowSelectedRoom = (id,target) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.lineCap = "round";
     context.lineWidth = 2;
     const targetId = id
-    console.log(id)
+    const scalingTarget = target.target.parentNode.parentNode.parentNode.parentNode
     updateStateOnChange()
-    console.log(connectedLines)
     for (let i = 0; i < connectedLineCounter; i++) {
-      console.log(connectedLines[i])
         connectedLines[i].forEach((path) => {
         if (path.id === targetId) {
-            console.log(path)
-            path.isLineRed ? context.strokeStyle = "black" : context.strokeStyle = "red"
+            if(path.isLineRed){
+              context.strokeStyle = "black"
+              scalingTarget.style.transform="scale(1)"
+            }else{
+              context.strokeStyle = "red"
+              scalingTarget.style.transform = "scaleY(1.3)"
+              scalingTarget.zIndex =0
+
+            }
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
             context.lineTo(path.x.x2, path.y.y2);
@@ -489,18 +494,18 @@ export default function DrawingDiv(props) {
   }
 
   return (
-    <div id="main" className=" w-full h-full max-h-screen  flex flex-col">
-      <h1 style={myStyle} id="lenPointNum" className="z-40">{lengthPoint}</h1>
-      <div className="flex flex-row w-full bg-sky-100  shadow-md h-2/10 md:h-2/10">
+    <div id="main" className="text-xs md:text-base w-full h-full max-h-screen  flex flex-col">
+      <h1 style={myStyle} id="lenPointNum" className="z-50">{lengthPoint}</h1>
+      <div className="flex flex-row w-full bg-baby-blue z-40  shadow-md h-2/10 md:h-3/10 lg:h-2/10 ">
         <div id="existingRoomsAtFloor"
              className="text-black  rounded-xl scroll-smooth scrollbar-hide existingRoomsAtFloor  existingRoomsStyle w-10/12 flex flex-col md:flex-row flex-wrap overflow-auto items-center justify-center">
         </div>
-        <div className="w-2/12 shadow-2xl rounded-xl flex flex-col items-center justify-evenly">
-              <Button id="undoBtt" onClick={undo} value="Undo"/>
+        <div className="w-2/12   rounded-xl flex flex-col items-center justify-evenly">
+              <Button id="undoBtt" title = "Remove last line" onClick={undo} value={ <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>}/>
               <Button onClick={clearAllFloor} value="Clear Floor"/>
         </div>
       </div>
-      <div style={{ position: "relative",zIndex:10}} className="bg-sky-50 overflow-hidden h-8/10 md:h-8/10" id="canvasDiv">
+      <div style={{ position: "relative",zIndex:10}} className=" overflow-hidden h-8/10 md:h-7/10 lg:h-8/10 " id="canvasDiv">
         <div className=" " id="spanDiv">
 
         </div>

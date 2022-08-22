@@ -16,8 +16,9 @@ module.exports = {
         '-1rem' : '-1rem',
         '-0.75rem':' -0.75rem',
         '-0.25rem' : '-0.25rem',
-        '1/2.2': '45%'
-
+        '1/2.2': '45%',
+        '1/5':'20%',
+        '1/8':'12.5%'
       },
       width: {
         '1/15': '6.66666666%',
@@ -42,7 +43,14 @@ module.exports = {
       },
       boxShadow: {
         'allSide': '0px 0px 40px #0f0f0f',
-      }
+      },
+      colors: {
+        'teal': '#59D7EE',
+        'tiffany-blue': '#9DE3F6',
+        'baby-blue':'#D3F4FB',
+        'blue-green':'#53DFD1'
+
+      },
     },
 
   },

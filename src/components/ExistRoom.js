@@ -1,11 +1,12 @@
 import React from "react";
 import Input from "./Input";
 import SelectMenu from "./SelectMenu";
+import '../App.css';
 
 
 function ExistRoom(props){
     return(
-        <span id={props.id}  className="select-none text-center flex flex-col border-solid border-sky-50 bg-gray-300 rounded-md h-full w-48 justify-center items-center">
+        <span id={props.id}  className="select-none text-center flex flex-col border   border-solid bg-tiffany-blue  rounded-md h-full w-48 justify-center items-center z-40">
             <div className="flex flex-row w-full items-center justify-center h-1/4">
                 <div className="text-sm w-5/6 flex justify-evenly ">Room Name : {props.id}</div>
                 <div className="w-1/6 flex items-center justify-center">
@@ -17,7 +18,7 @@ function ExistRoom(props){
             <div className="h-1/4 flex flex-col justify-center items-center">
                 <Input inputName="Glow/Unglow Lines" type="checkbox"  onClick={props.glowSelectedRoom} id={props.id} position={false}/>
             </div>
-            <div className=" flex flex-row mt-2 h-1/4 ">
+            <div className=" flex flex-row mt-2 h-1/4  ">
                 <span className="text-sm flex justify-center items-center">
                     Carpet type : 
                 </span>

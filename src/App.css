@@ -4,6 +4,17 @@
   box-sizing: border-box;
   user-select: none;
 }
+
+@media screen and (min-width: 768px) {
+  html {
+    font-size: 10px;
+  }
+}
+@media screen and (min-width: 1280px) {
+  html {
+    font-size: 16px;
+  }
+}
 .App {
   text-align: center;
 }
@@ -11,20 +22,23 @@
   transition: 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19)!important;
 }
 #manageSection {
-  transition: 1s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+  transition: 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19)!important; 
 }
-.openMenuSection {
-  transition: 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19);
-  display: block;
-  z-index: 50;
+#openMenuSection {
+  transition: 0.25s cubic-bezier(0.55, 0.055, 0.675, 0.19)!important; 
 }
 .input-field:focus-within label {
-  top:-.5rem;
+  display:block;
+  top:-0.75rem;
   opacity: 1;
+  left:0;
+
 }
+
 .text-area-field:focus-within label {
-  top:-.5rem;
+  top:-0.75rem;
   opacity: 1;
+  left:0;
 }
 .App-header {
   background-color: #282c34;

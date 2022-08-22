@@ -20,7 +20,6 @@ import '../App.css';
 import React ,{useState} from 'react'
 function Input({inputName, onChange= ()=>{}, type="text",onClick =()=>{}, id,position=true} ) {
     const [roomNameIsValid,setRoomNameIsValid] = useState("")
-
     const checkRoomNameIsValid = () => {
         const inputRoomName = document.getElementById(id)
         const roomNameIsValid = inputRoomName.value

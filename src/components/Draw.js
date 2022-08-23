@@ -11,6 +11,8 @@ export default function DrawingDiv(props) {
   const [lastMoveCoordinates, setLastMoveCoordinates] = useState({})
   const canvasRef = useRef(null)
   const contextRef = useRef(null)
+  const [windowWidth,setWindowWidth] = useState(window.screen.width)
+  const [windowHeight,setWindowHeight] = useState(window.screen.height)
   const [isDrawing, setIsDrawing] = useState(false)
   const [point, setPoint] = useState({ x: 0, y: 0 })
   const [lengthPoint, setLengthPoint] = useState(0)
@@ -152,7 +154,6 @@ export default function DrawingDiv(props) {
 
   const changeTypeOfCarpet = (type)=>{
     connectedLines[connectedLineCounter-1].forEach((path)=>{
-        console.log(path)
         path.type = type
     })
     updateStateOnChange()
@@ -172,10 +173,11 @@ export default function DrawingDiv(props) {
             if(path.isLineRed){
               context.strokeStyle = "black"
               scalingTarget.style.transform="scale(1)"
+              scalingTarget.style.zIndex = 98;
             }else{
               context.strokeStyle = "red"
-              scalingTarget.style.transform = "scaleY(1.3)"
-              scalingTarget.zIndex =0
+              scalingTarget.style.transform = "scaleX(1)"
+              scalingTarget.style.zIndex =99
 
             }
             context.beginPath();
@@ -497,8 +499,7 @@ export default function DrawingDiv(props) {
     <div id="main" className="text-xs md:text-base w-full h-full max-h-screen  flex flex-col">
       <h1 style={myStyle} id="lenPointNum" className="z-50">{lengthPoint}</h1>
       <div className="flex flex-row w-full bg-baby-blue z-40  shadow-md h-2/10 md:h-3/10 lg:h-2/10 ">
-        <div id="existingRoomsAtFloor"
-             className="text-black  rounded-xl scroll-smooth scrollbar-hide existingRoomsAtFloor  existingRoomsStyle w-10/12 flex flex-col md:flex-row flex-wrap overflow-auto items-center justify-center">
+        <div id="existingRoomsAtFloor" className="text-black  rounded-xl scroll-smooth scrollbar-hide existingRoomsAtFloor  existingRoomsStyle w-10/12 flex flex-col md:flex-row justify-center items-center  ">
         </div>
         <div className="w-2/12   rounded-xl flex flex-col items-center justify-evenly">
               <Button id="undoBtt" title = "Remove last line" onClick={undo} value={ <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>}/>

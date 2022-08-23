@@ -7,8 +7,8 @@ import "../App.css"
 
 class Manage extends Component {
   state = {
-    windowWidth:window.innerWidth,
-    windowHeigth:window.innerHeight,
+    windowWidth:window.screen.width,
+    windowHeigth:window.screen.height,
     rooms: [],
     currentRoomName:"",
     selectedRoom: "",
@@ -80,15 +80,15 @@ class Manage extends Component {
 
   render() {  
     return (
-      <div style={{height:this.state.windowHeigth,width:this.state.windowWidth}} className=" text-xs md:text-base flex flex-row select-none touch-none  relative overflow-hidden" >
+      <div  className=" text-xs md:text-base flex flex-row h-screen w-screen   relative overflow-hidden" >
         <div id="openMenuSection" onClick={this.showMenuSection} className="invisible select-none  rounded-2xl absolute z-50 top-0 left-0  flex items-center justify-center h-10 w-10 ">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-full w-full  text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </div>
-        <div id="manageSection" className=" visible z-50 left-1/8 md:left-1/3 w-4/5 md:w-2/5 top-0 max-w-18.75 absolute h-full rounded-md ">
+        <div id="manageSection" className=" visible z-50 left-1/8 sm:left-1/3 md:left-1/3 w-4/5 md:w-2/5 top-0 max-w-18.75 absolute h-full rounded-md ">
           <div className="w-full h-full flex flex-col justify-center  relative  text-black rounded-2xl">
-            <div className="w-full h-3/4 relative flex justify-center  flex-col   bg-baby-blue  shadow-2xl shadow-slate-600  rounded-2xl ">
+            <div className="w-full min-h-3/4 h-3/4 relative flex justify-center  flex-col   bg-baby-blue  shadow-2xl shadow-slate-600  rounded-2xl ">
                   <div onClick={this.closeMenuSection} className=" ">
                     <svg xmlns="http://www.w3.org/2000/svg" className="top-0 right-0 w-10 h-10 text-black absolute flex justify-center items-center" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

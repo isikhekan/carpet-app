@@ -5,16 +5,15 @@
   user-select: none;
 }
 
-@media screen and (min-width: 768px) {
-  html {
+
+@media (max-height: 480px) {
+  html{
     font-size: 10px;
   }
 }
-@media screen and (min-width: 1280px) {
-  html {
-    font-size: 16px;
-  }
-}
+
+
+
 .App {
   text-align: center;
 }

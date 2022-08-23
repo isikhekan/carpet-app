@@ -3,7 +3,9 @@ module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
+  
   theme: {
+
     maxWidth: {
       '10.5': '168px',
       '20': '320px',
@@ -18,7 +20,8 @@ module.exports = {
         '-0.25rem' : '-0.25rem',
         '1/2.2': '45%',
         '1/5':'20%',
-        '1/8':'12.5%'
+        '1/8':'12.5%',
+        '1/6':'16.6666%'
       },
       width: {
         '1/15': '6.66666666%',
@@ -51,6 +54,9 @@ module.exports = {
         'blue-green':'#53DFD1'
 
       },
+      minHeight: {
+        '3/4': '75%',
+      }
     },
 
   },

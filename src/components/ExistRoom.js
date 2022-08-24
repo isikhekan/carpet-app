@@ -6,7 +6,7 @@ import '../App.css';
 
 function ExistRoom(props){
     return(
-        <span id={props.id}  className="select-none text-center flex flex-col border   border-solid bg-tiffany-blue  rounded-md w-full  justify-center items-center z-40">
+        <span id={props.id}  className="select-none text-center flex flex-col border  origin-top transition-all border-solid bg-tiffany-blue  rounded-md md:w-full  justify-center items-center z-40">
             <div className="flex flex-row w-full items-center justify-center h-1/4">
                 <div className="text-sm w-5/6 flex justify-evenly ">Room Name : {props.id}</div>
                 <div className="w-1/6 flex items-center justify-center">

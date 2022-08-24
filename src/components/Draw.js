@@ -158,27 +158,28 @@ export default function DrawingDiv(props) {
     })
     updateStateOnChange()
   }  
-
+  const unglowRooms = ()=>{
+    for (let i = 0; i < connectedLineCounter; i++) {
+      connectedLines[i].forEach((path) => {
+          path.isLineRed = false
+        }
+      )
+    }
+  }
   const glowSelectedRoom = (id,target) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    context.lineCap = "round";
     context.lineWidth = 2;
+    context.lineCap = "round";
     const targetId = id
-    const scalingTarget = target.target.parentNode.parentNode.parentNode.parentNode
     updateStateOnChange()
     for (let i = 0; i < connectedLineCounter; i++) {
         connectedLines[i].forEach((path) => {
         if (path.id === targetId) {
             if(path.isLineRed){
               context.strokeStyle = "black"
-              scalingTarget.style.transform="scale(1)"
-              scalingTarget.style.zIndex = 98;
             }else{
               context.strokeStyle = "red"
-              scalingTarget.style.transform = "scaleX(1)"
-              scalingTarget.style.zIndex =99
-
             }
             context.beginPath();
             context.moveTo(path.x.x1, path.y.y1);
@@ -189,6 +190,7 @@ export default function DrawingDiv(props) {
           }
         })
       }
+
   }
   const deleteSelectedLines = (e) => {
     const targetId = String(e.target.parentNode.parentNode.parentNode.id)
@@ -238,6 +240,9 @@ export default function DrawingDiv(props) {
     for (let i = 0; i < room[currentRoomIndex].coordinates.connectedLineCounter; i++) {
       const createNewSpan = document.createElement("span")
       const root1 = ReactDom.createRoot(createNewSpan)
+      createNewSpan.style.display = "flex";
+      createNewSpan.style.justifyContent = "center";
+      
       root1.render(<ExistRoom roomCarpetType="" deleteSelectedLines={deleteSelectedLines} changeTypeOfSelect={changeTypeOfCarpet} changeConnectedLinesTotalPiece={changeConnectedLinesTotalPiece}  glowSelectedRoom = {glowSelectedRoom}  id={room[currentRoomIndex].coordinates.connectedLines[i][0].id} pieceInputValue = {room[currentRoomIndex].coordinates.connectedLines[i][0].totalPiece}   />)
       existingRoomDiv.appendChild(createNewSpan)
     }
@@ -320,6 +325,7 @@ export default function DrawingDiv(props) {
       }
     }
   }
+  
   const startDrawing = ({ nativeEvent }) => {
     const myCanvas = document.getElementById("myCanvas")
     const canvas = canvasRef.current;
@@ -426,11 +432,13 @@ export default function DrawingDiv(props) {
     const currentLength = document.getElementById("lenPointNum")
     setLineConnected(false)
     currentLength.style.opacity = 0
-
     setIsDrawing(false)
     isLineConnected()
     contextRef.current.closePath();
     lenPointDiv.innerText = ""
+    unglowRooms()
+    getRoomContent()
+
   }
   const draw = ({ nativeEvent }) => {
     const myCanvas = document.getElementById("myCanvas")

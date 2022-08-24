@@ -81,7 +81,7 @@ class Manage extends Component {
   render() {  
     return (
       <div  className=" text-xs md:text-base flex flex-row h-screen w-screen   relative overflow-hidden" >
-        <div id="openMenuSection" onClick={this.showMenuSection} className="invisible select-none  rounded-2xl absolute z-50 top-0 left-0  flex items-center justify-center h-10 w-10 ">
+        <div id="openMenuSection" onClick={this.showMenuSection} className="bg-white invisible select-none  rounded-xl absolute z-50 top-0 left-0  flex items-center justify-center h-10 w-10 ">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-full w-full  text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
@@ -133,7 +133,7 @@ class Manage extends Component {
         </div>
           <div className="w-full z-0">
           <div className="draw max-h-screen h-full">
-            <div className="w-full max-h-screen h-full bg-cyan-50">
+            <div className="w-full max-h-screen h-full touch-none select-none bg-cyan-50">
               {this.state.rooms.length ? (
                 <Draw updateStateOnChange={this.updateStatement}
                   windowWidth={this.state.windowWidth}

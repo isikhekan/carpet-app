@@ -6,7 +6,7 @@ import '../App.css';
 
 function ExistRoom(props){
     return(
-        <span id={props.id}  className="select-none text-center flex flex-col border  origin-top transition-all border-solid bg-tiffany-blue  rounded-md md:w-full  justify-center items-center z-40">
+        <span id={props.id}  className="select-none text-center flex flex-col border mb-2 md:mb-5 origin-top transition-all border-solid bg-tiffany-blue  rounded-md md:w-full  justify-center items-center">
             <div className="flex flex-row w-full items-center justify-center h-1/4">
                 <div className="text-sm w-5/6 flex justify-evenly ">Room Name : {props.id}</div>
                 <div className="w-1/6 flex items-center justify-center">
@@ -15,16 +15,16 @@ function ExistRoom(props){
                     </svg>
                 </div>
             </div>
-            <div className="h-1/4 flex flex-col justify-center items-center">
+            <div className="h-1/4 w-full flex flex-row justify-around items-center">
                 <Input inputName="Glow/Unglow Lines" type="checkbox"  onClick={props.glowSelectedRoom} id={props.id} position={false}/>
             </div>
-            <div className=" flex flex-row mt-2 h-1/4  ">
-                <span className="text-sm flex justify-center items-center">
+            <div  className=" flex flex-row mt-2  h-1/4 justify-around  ">
+                <span className="text-sm flex justify-around items-center">
                     Carpet type : 
                 </span>
-                 <SelectMenu changeTypeOfCarpet = {props.changeTypeOfSelect}  defaultOption={{value: "multi-pieced", label: "Multi Piece"}} options = {[{value: "multi-pieced", label: "Multi Piece"},{value: "one-piece", label: "One Piece"}]} />
+                 <SelectMenu  changeTypeOfCarpet = {props.changeTypeOfSelect}  defaultOption={{value: "multi-pieced", label: "Multi Piece"}} options = {[{value: "multi-pieced", label: "Multi Piece"},{value: "one-piece", label: "One Piece"}]} />
             </div>
-            <div className="mt-2 w-full flex flex-row h-1/4">
+            <div className="mt-2  flex flex-row h-1/4 justify-around">
                 <span className="h-full text-sm">Total Carpet Piece :  </span>
                 <input onInput={props.changeConnectedLinesTotalPiece} className=" w-14 border-2 border-solid h-5 outline-0 rounded-md text-center ml-1" min={1} value={props.pieceInputValue} type="number" />
             </div>

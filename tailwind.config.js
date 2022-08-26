@@ -9,7 +9,8 @@ module.exports = {
     maxWidth: {
       '10.5': '168px',
       '20': '320px',
-      '18.75': '300px'
+      '18.75': '300px',
+      '32': '8rem'
     },
     extend: {
       spacing: {

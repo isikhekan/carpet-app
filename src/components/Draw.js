@@ -295,7 +295,7 @@ export default function DrawingDiv(props) {
     if (connectedLines.length) {
       if (connectedLines[connectedLines.length - 1].length < 1) {
         for (let i = 0; i < connectedLines.length - 1; i++) {
-          connectedLines[i].forEach((path) => {
+          connectedLines[ i].forEach((path) => {
             path.isLineRed = false;
           })
         }
@@ -495,6 +495,7 @@ export default function DrawingDiv(props) {
       getRoomNumbers()
     }
     getRoomContent()
+    unglowRooms()
     room[currentRoomIndex].coordinates.connectedLineCounter = connectedLineCounter
     for(let i in connectedLines[connectedLineCounter]){
       connectedLines[connectedLineCounter][i].isLineStartAndEndPointConnected = false
@@ -505,19 +506,19 @@ export default function DrawingDiv(props) {
   return (
     <div id="main" className="text-xs md:text-base w-full h-full max-h-screen  touch-none select-none flex flex-col md:flex-row">
       <h1 style={myStyle} id="lenPointNum" className="z-50">{lengthPoint}</h1>
-      <div className="h-2/10  flex flex-row md:flex-col  bg-baby-blue z-40 w-full  md:w-1.5/10 shadow-md md:h-screen ">
-        <div id="existingRoomsAtFloor" className="text-black  rounded-xl scroll-smooth overflow-auto   existingRoomsAtFloor   existingRoomsStyle w-10/12 flex  items-center   flex-col  md:w-full md:h-9/10   existingRoomsAtFloor  existingRoomsStyle ">
+      <div className="h-2/10 flex flex-row md:flex-col  bg-baby-blue z-40 w-full  md:w-1.5/10 shadow-md md:h-screen ">
+        <div id="existingRoomsAtFloor" className="text-black rounded-xl scroll-smooth overflow-auto   existingRoomsAtFloor   existingRoomsStyle w-10/12 flex  items-center   flex-col  md:w-full md:h-9/10   existingRoomsAtFloor  existingRoomsStyle ">
         </div>
         <div className=" w-2/12 md:w-full bg-baby-blue ch rounded-xl flex md:flex-row flex-col md:h-1/10 justify-center items-center h-full z-50">
               <Button id="undoBtt" title = "Remove last line" onClick={undo} value={ <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>}/>
               <Button onClick={clearAllFloor} value="Clear Floor"/>
         </div>
       </div>
-      <div style={{ position: "relative",zIndex:10}} className="overflow-hidden  w-full h-8/10 md:h-screen " id="canvasDiv">
+      <div style={{ position: "relative",zIndex:10}} className="overflow-hidden w-full h-8/10 md:h-screen" id="canvasDiv">
         <div className=" " id="spanDiv">
 
         </div>
-        <div className="w-full h-full overflow-x-hidden ">
+        <div className="w-full h-full overflow-x-hidden  ">
           <canvas className="rounded-md select-none touch-none" id="myCanvas"
                   onMouseDown={startDrawing}
                   onMouseUp={finishDrawing}
